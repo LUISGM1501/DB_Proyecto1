@@ -1,0 +1,54 @@
+version: '3'
+services:
+  backend:
+    build: .
+    command: python app.py
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST_POSTGRES=${DB_HOST_POSTGRES}   
+      - DB_PORT_POSTGRES=${DB_PORT_POSTGRES}   
+      - DB_HOST_MONGO=${DB_HOST_MONGO}        
+      - DB_PORT_MONGO=${DB_PORT_MONGO}         
+      - DB_USER=${DB_USER}                     
+      - DB_PASSWORD=${DB_PASSWORD}            
+      - JWT_SECRET=${JWT_SECRET}               
+      - REDIS_HOST=${REDIS_HOST}               
+      - REDIS_PORT=${REDIS_PORT}              
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    image: mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres-data:
+  mongo-data:
