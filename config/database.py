@@ -38,8 +38,10 @@ def get_mongo_connection():
 def get_redis_connection():
     try:
         redis_client = redis.Redis(
-            host=os.getenv('REDIS_HOST'), 
-            port=os.getenv('REDIS_PORT')
+            host=os.getenv('REDIS_HOST'),
+            port=int(os.getenv('REDIS_PORT')),
+            db=0,
+            decode_responses=True
         )
         print("Conexión a Redis exitosa")
         return redis_client
