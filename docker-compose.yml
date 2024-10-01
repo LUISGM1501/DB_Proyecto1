@@ -8,15 +8,15 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DB_HOST_POSTGRES=${DB_HOST_POSTGRES}   
-      - DB_PORT_POSTGRES=${DB_PORT_POSTGRES}   
-      - DB_HOST_MONGO=${DB_HOST_MONGO}        
-      - DB_PORT_MONGO=${DB_PORT_MONGO}         
-      - DB_USER=${DB_USER}                     
-      - DB_PASSWORD=${DB_PASSWORD}            
-      - JWT_SECRET=${JWT_SECRET}               
-      - REDIS_HOST=${REDIS_HOST}               
-      - REDIS_PORT=${REDIS_PORT}              
+      - DB_HOST_POSTGRES=${DB_HOST_POSTGRES}
+      - DB_PORT_POSTGRES=${DB_PORT_POSTGRES}
+      - DB_HOST_MONGO=${DB_HOST_MONGO}
+      - DB_PORT_MONGO=${DB_PORT_MONGO}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     env_file:
       - .env
     depends_on:
@@ -25,12 +25,11 @@ services:
       - redis
 
   postgres:
-    image: postgres
+    image: postgres:13
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    env_file:
-      - .env
+      POSTGRES_DB: redsocial
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d/
@@ -38,14 +37,14 @@ services:
       - "5432:5432"
 
   mongodb:
-    image: mongo
+    image: mongo:4.4
     volumes:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
 
   redis:
-    image: redis
+    image: redis:6
     ports:
       - "6379:6379"
 

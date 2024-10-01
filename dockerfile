@@ -1,5 +1,3 @@
-# Dockerfile
-
 # Utiliza una imagen base de Python
 FROM python:3.9-slim
 
@@ -9,8 +7,8 @@ WORKDIR /app
 # Actualiza los paquetes e instala las herramientas necesarias
 RUN apt-get update && \
     apt-get install -y wget gnupg iputils-ping redis-tools && \
-    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add - && \
-    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list && \
+    wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - && \
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
     apt-get update && \
     apt-get install -y mongodb-org-tools && \
     apt-get clean && \
