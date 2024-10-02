@@ -11,6 +11,10 @@ from routes.comment_routes import comment_routes
 from routes.like_routes import like_routes
 from routes.reaction_routes import reaction_routes
 from routes.search_routes import search_routes
+from routes.follow_routes import follow_routes
+from routes.notification_routes import notification_routes
+
+import os
 
 
 # Cargar variables de entorno
@@ -33,7 +37,8 @@ app.register_blueprint(comment_routes)
 app.register_blueprint(like_routes)
 app.register_blueprint(reaction_routes)
 app.register_blueprint(search_routes)
-
+app.register_blueprint(follow_routes)
+app.register_blueprint(notification_routes)
 
 # Establecer conexiones a las bases de datos
 postgres_conn = get_postgres_connection()

@@ -31,3 +31,38 @@ def get_place(place_id):
             return None
     finally:
         conn.close()
+
+# Actualizar un lugar existente
+def update_place(place_id, name, description, city, country):
+    conn = get_postgres_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT update_place(%s, %s, %s, %s, %s)",
+                (place_id, name, description, city, country)
+            )
+            updated_place_id = cur.fetchone()
+            conn.commit()
+            return updated_place_id[0] if updated_place_id else None
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        conn.close()
+
+# Eliminar un lugar existente
+def delete_place(place_id):
+    conn = get_postgres_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT delete_place(%s)", (place_id,))
+            deleted_place_id = cur.fetchone()
+            if deleted_place_id:
+                conn.commit()
+                return deleted_place_id[0]
+            return None
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        conn.close()

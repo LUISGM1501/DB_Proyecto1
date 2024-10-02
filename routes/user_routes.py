@@ -7,6 +7,7 @@ user_routes = Blueprint('user_routes', __name__)
 
 # Crear un nuevo usuario
 @user_routes.route('/users', methods=['POST'])
+@jwt_required()
 def create_user():
     data = request.json
     try:
@@ -23,6 +24,7 @@ def create_user():
 
 # Obtener un usuario por ID
 @user_routes.route('/users/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
     user = user_controller.get_user(user_id)
     if user:
@@ -32,6 +34,7 @@ def get_user(user_id):
     
 # Login
 @user_routes.route('/login', methods=['POST'])
+@jwt_required()
 def login():
     data = request.json
     access_token = authenticate_user(data['username'], data['password'])

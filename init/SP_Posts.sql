@@ -59,3 +59,34 @@ BEGIN
     OFFSET (p_page - 1) * p_page_size;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Actualizar un post
+CREATE OR REPLACE FUNCTION update_post(
+    p_post_id INTEGER,
+    p_content TEXT
+) RETURNS INTEGER AS $$
+DECLARE
+    updated_id INTEGER;
+BEGIN
+    UPDATE posts 
+    SET content = p_content, 
+        updated_at = CURRENT_TIMESTAMP 
+    WHERE id = p_post_id 
+    RETURNING id INTO updated_id;
+    
+    RETURN updated_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Eliminar un post
+CREATE OR REPLACE FUNCTION delete_post(p_post_id INTEGER) RETURNS INTEGER AS $$
+DECLARE
+    deleted_id INTEGER;
+BEGIN
+    DELETE FROM posts 
+    WHERE id = p_post_id 
+    RETURNING id INTO deleted_id;
+    
+    RETURN deleted_id;
+END;
+$$ LANGUAGE plpgsql;

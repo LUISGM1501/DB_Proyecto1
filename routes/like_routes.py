@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from controllers import like_controller
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 like_routes = Blueprint('like_routes', __name__)
 
 @like_routes.route('/likes', methods=['POST'])
+@jwt_required()
 def add_like():
     data = request.json
     try:
@@ -20,6 +22,7 @@ def add_like():
         return jsonify({"error": str(e)}), 400
 
 @like_routes.route('/likes/count', methods=['GET'])
+@jwt_required()
 def get_like_count():
     post_id = request.args.get('post_id')
     place_id = request.args.get('place_id')

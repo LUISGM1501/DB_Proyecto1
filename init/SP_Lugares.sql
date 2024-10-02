@@ -34,3 +34,41 @@ BEGIN
     WHERE p.id = p_place_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Actualizar un lugar
+CREATE OR REPLACE FUNCTION update_place(
+    p_place_id INTEGER,
+    p_name VARCHAR(100),
+    p_description TEXT,
+    p_city VARCHAR(100),
+    p_country VARCHAR(100)
+) RETURNS INTEGER AS $$
+DECLARE
+    updated_id INTEGER;
+BEGIN
+    UPDATE places 
+    SET name = p_name, 
+        description = p_description, 
+        city = p_city, 
+        country = p_country, 
+        updated_at = CURRENT_TIMESTAMP 
+    WHERE id = p_place_id 
+    RETURNING id INTO updated_id;
+    
+    RETURN updated_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Eliminar un lugar
+CREATE OR REPLACE FUNCTION delete_place(p_place_id INTEGER) RETURNS INTEGER AS $$
+DECLARE
+    deleted_id INTEGER;
+BEGIN
+    DELETE FROM places 
+    WHERE id = p_place_id 
+    RETURNING id INTO deleted_id;
+    
+    RETURN deleted_id;
+END;
+$$ LANGUAGE plpgsql;        
+

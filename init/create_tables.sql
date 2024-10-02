@@ -16,8 +16,16 @@ CREATE TABLE IF NOT EXISTS posts (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    search_vector tsvector
 );
+
+CREATE INDEX posts_search_idx ON posts USING GIN (search_vector);
+
+CREATE TRIGGER posts_search_update 
+BEFORE INSERT OR UPDATE ON posts
+FOR EACH ROW EXECUTE FUNCTION
+tsvector_update_trigger(search_vector, 'pg_catalog.english', content);
 
 -- Tabla de Enlaces de Media para Publicaciones
 CREATE TABLE IF NOT EXISTS post_media_links (
@@ -35,8 +43,16 @@ CREATE TABLE IF NOT EXISTS places (
     city VARCHAR(100) NOT NULL,
     country VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    search_vector tsvector
 );
+
+CREATE INDEX places_search_idx ON places USING GIN (search_vector);
+
+CREATE TRIGGER places_search_update 
+BEFORE INSERT OR UPDATE ON places
+FOR EACH ROW EXECUTE FUNCTION
+tsvector_update_trigger(search_vector, 'pg_catalog.english', name, description, city, country);
 
 -- Tabla de Enlaces de Imagenes para Lugares
 CREATE TABLE IF NOT EXISTS place_image_links (
@@ -52,8 +68,16 @@ CREATE TABLE IF NOT EXISTS travel_lists (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    search_vector tsvector
 );
+
+CREATE INDEX travel_lists_search_idx ON travel_lists USING GIN (search_vector);
+
+CREATE TRIGGER travel_lists_search_update 
+BEFORE INSERT OR UPDATE ON travel_lists
+FOR EACH ROW EXECUTE FUNCTION
+tsvector_update_trigger(search_vector, 'pg_catalog.english', name, description);
 
 -- Tabla de Relacion entre Listas de Viaje y Lugares
 CREATE TABLE IF NOT EXISTS travel_list_places (
@@ -110,3 +134,21 @@ CREATE TABLE IF NOT EXISTS reactions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, post_id)
 );
+
+-- Crear extension para busqueda de texto completo si no existe
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+
+-- Tabla de Notificaciones
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL, -- e.g., 'comment', 'like', 'follow', 'place_added'
+    content TEXT NOT NULL,
+    related_id INTEGER, -- ID del post, comentario, usuario o lista de viaje relacionado
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indice para mejorar el rendimiento de las consultas de notificaciones
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);

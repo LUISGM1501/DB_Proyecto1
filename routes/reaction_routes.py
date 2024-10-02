@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from controllers import reaction_controller
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 reaction_routes = Blueprint('reaction_routes', __name__)
 
 @reaction_routes.route('/reactions', methods=['POST'])
+@jwt_required()
 def add_or_update_reaction():
     data = request.json
     try:
