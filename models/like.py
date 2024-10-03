@@ -1,4 +1,5 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class Like:
     def __init__(self, user_id, post_id=None, place_id=None, id=None):
@@ -6,7 +7,7 @@ class Like:
         self.user_id = user_id
         self.post_id = post_id
         self.place_id = place_id
-        self.created_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
 
     # to_dict: Convierte el objeto Like a un diccionario
     # Lo que facilita la conversion a JSON

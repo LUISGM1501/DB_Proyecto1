@@ -1,4 +1,5 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class Place:
     def __init__(self, name, description, city, country, id=None):
@@ -7,8 +8,8 @@ class Place:
         self.description = description
         self.city = city
         self.country = country
-        self.created_at = datetime.now(UTC)
-        self.updated_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
+        self.updated_at = datetime.now(ZoneInfo("UTC"))
         self.image_links = []
         self.comments = []
         self.likes = []

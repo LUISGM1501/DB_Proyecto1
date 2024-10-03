@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION search_content(
 )
 RETURNS TABLE (
     id INTEGER,
-    content_type TEXT,
+    result_type TEXT,
     title TEXT,
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE,
@@ -25,7 +25,7 @@ BEGIN
             RETURN QUERY
             SELECT 
                 p.id,
-                'post'::TEXT AS content_type,
+                'post'::TEXT AS result_type,
                 LEFT(p.content, 50) AS title,
                 p.content AS description,
                 p.created_at,
@@ -53,7 +53,7 @@ BEGIN
             RETURN QUERY
             SELECT 
                 pl.id,
-                'place'::TEXT AS content_type,
+                'place'::TEXT AS result_type,
                 pl.name AS title,
                 pl.description,
                 pl.created_at,
@@ -79,7 +79,7 @@ BEGIN
             RETURN QUERY
             SELECT 
                 tl.id,
-                'travel_list'::TEXT AS content_type,
+                'travel_list'::TEXT AS result_type,
                 tl.name AS title,
                 tl.description,
                 tl.created_at,

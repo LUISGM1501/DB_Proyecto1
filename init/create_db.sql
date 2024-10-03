@@ -1,1 +1,1 @@
-CREATE DATABASE redsocial;
+SELECT 'CREATE DATABASE redsocial' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'redsocial')\gexec

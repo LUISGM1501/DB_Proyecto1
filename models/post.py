@@ -1,12 +1,13 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class Post:
     def __init__(self, user_id, content, id=None):
         self.id = id
         self.user_id = user_id
         self.content = content
-        self.created_at = datetime.now(UTC)
-        self.updated_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
+        self.updated_at = datetime.now(ZoneInfo("UTC"))
         self.media_links = []
         self.comments = []
         self.likes = []

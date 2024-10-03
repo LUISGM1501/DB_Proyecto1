@@ -1,4 +1,5 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class Reaction:
     def __init__(self, user_id, post_id, reaction_type, id=None):
@@ -6,7 +7,7 @@ class Reaction:
         self.user_id = user_id
         self.post_id = post_id
         self.reaction_type = reaction_type
-        self.created_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
 
     # to_dict: Convierte el objeto Reaction a un diccionario
     # Lo que facilita la conversion a JSON

@@ -1,5 +1,5 @@
-from datetime import datetime, UTC
-
+from datetime import datetime
+from zoneinfo import ZoneInfo
 class Comment:
     def __init__(self, user_id, content, post_id=None, place_id=None, id=None):
         self.id = id
@@ -7,8 +7,8 @@ class Comment:
         self.content = content
         self.post_id = post_id
         self.place_id = place_id
-        self.created_at = datetime.now(UTC)
-        self.updated_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
+        self.updated_at = datetime.now(ZoneInfo("UTC"))
 
     # to_dict: Convierte el objeto Comment a un diccionario
     # Lo que facilita la conversion a JSON

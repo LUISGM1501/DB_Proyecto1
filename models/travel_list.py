@@ -1,4 +1,5 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class TravelList:
     def __init__(self, user_id, name, description, id=None):
@@ -6,8 +7,8 @@ class TravelList:
         self.user_id = user_id
         self.name = name
         self.description = description
-        self.created_at = datetime.now(UTC)
-        self.updated_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
+        self.updated_at = datetime.now(ZoneInfo("UTC"))
         self.places = []
         self.followers = []
 

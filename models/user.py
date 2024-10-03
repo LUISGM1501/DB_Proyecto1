@@ -1,4 +1,5 @@
-from datetime import datetime, UTC
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 class User:
     def __init__(self, username, email, password, bio=None, profile_picture_url=None, id=None):
@@ -8,8 +9,8 @@ class User:
         self.password = password
         self.bio = bio
         self.profile_picture_url = profile_picture_url
-        self.created_at = datetime.now(UTC)
-        self.updated_at = datetime.now(UTC)
+        self.created_at = datetime.now(ZoneInfo("UTC"))
+        self.updated_at = datetime.now(ZoneInfo("UTC"))
 
     # to_dict: Convierte el objeto User a un diccionario
     # Lo que facilita la conversion a JSON
