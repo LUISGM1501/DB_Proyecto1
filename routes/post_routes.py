@@ -24,7 +24,7 @@ def create_post():
 def get_post(post_id):
     post = post_controller.get_post(post_id)
     if post:
-        return jsonify(post.to_dict()), 200
+        return jsonify(post.to_dict() if hasattr(post, 'to_dict') else post), 200
     else:
         return jsonify({"error": "Post not found"}), 404
     
@@ -36,14 +36,14 @@ def get_posts():
     page_size = int(request.args.get('page_size', 10))
     posts, total_count = post_controller.get_posts_paginated(page, page_size)
     return jsonify({
-        "posts": [post.to_dict() for post in posts],
+        "posts": [post.to_dict() if hasattr(post, 'to_dict') else post for post in posts],
         "total_count": total_count,
         "page": page,
         "page_size": page_size
     }), 200
 
 # Actualizar un post existente
-post_routes.route('/posts/<int:post_id>', methods=['PUT'])
+@post_routes.route('/posts/<int:post_id>', methods=['PUT'])
 @jwt_required()
 def update_post(post_id):
     current_user_id = get_jwt_identity()

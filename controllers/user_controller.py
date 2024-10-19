@@ -32,3 +32,16 @@ def get_user(user_id):
             return None
     finally:
         conn.close()
+
+# Obtener un usuario por Nombre 
+def get_user_by_username(username):
+    conn = get_postgres_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM get_user_by_username(%s)", (username,))
+            user_data = cur.fetchone()
+            if user_data:
+                return User(*user_data)
+            return None
+    finally:
+        conn.close()

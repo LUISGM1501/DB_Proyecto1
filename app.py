@@ -13,6 +13,7 @@ from routes.reaction_routes import reaction_routes
 from routes.search_routes import search_routes
 from routes.follow_routes import follow_routes
 from routes.notification_routes import notification_routes
+from middleware.error_handler import register_error_handlers
 
 import os
 
@@ -23,10 +24,14 @@ load_dotenv()
 # Crear la aplicación Flask
 app = Flask(__name__)
 
+
 # Configurar JWT
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
+
+# Declarar el manejo de errores
+register_error_handlers(app)
 
 # Registrar los blueprints
 app.register_blueprint(user_routes)

@@ -26,7 +26,7 @@ def create_place():
 def get_place(place_id):
     place = place_controller.get_place(place_id)
     if place:
-        return jsonify(place.to_dict()), 200
+        return jsonify(place.to_dict() if hasattr(place, 'to_dict') else place), 200
     else:
         return jsonify({"error": "Place not found"}), 404
     

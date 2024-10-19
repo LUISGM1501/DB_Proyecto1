@@ -27,4 +27,5 @@ def get_comments():
     post_id = request.args.get('post_id')
     place_id = request.args.get('place_id')
     comments = comment_controller.get_comments(post_id, place_id)
-    return jsonify([comment.to_dict() for comment in comments]), 200
+
+    return jsonify([comment.to_dict() if hasattr(comment, 'to_dict') else comment for comment in comments]), 200

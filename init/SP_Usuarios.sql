@@ -35,3 +35,23 @@ BEGIN
     WHERE u.id = p_user_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Procedimiento para buscar un usuario por username
+CREATE OR REPLACE FUNCTION get_user_by_username(username VARCHAR)
+RETURNS TABLE (
+    id INT,
+    username VARCHAR,
+    email VARCHAR,
+    password VARCHAR,
+    bio TEXT,
+    profile_picture_url TEXT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT id, username, email, password, bio, profile_picture_url, created_at, updated_at
+    FROM users
+    WHERE username = get_user_by_username.username;
+END;
+$$ LANGUAGE plpgsql;
