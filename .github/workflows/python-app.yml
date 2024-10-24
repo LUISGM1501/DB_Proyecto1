@@ -25,14 +25,14 @@ jobs:
       # Step 4: Set environment variables from GitHub Secrets
       - name: Set Environment Variables
         run: |
-          echo "DB_HOST_POSTGRES=localhost" >> $GITHUB_ENV
+          echo "DB_HOST_POSTGRES=postgres" >> $GITHUB_ENV
           echo "DB_PORT_POSTGRES=5432" >> $GITHUB_ENV
-          echo "DB_HOST_MONGO=localhost" >> $GITHUB_ENV
+          echo "DB_HOST_MONGO=mongodb" >> $GITHUB_ENV
           echo "DB_PORT_MONGO=27017" >> $GITHUB_ENV
-          echo "DB_USER=my_db_user" >> $GITHUB_ENV
-          echo "DB_PASSWORD=my_db_password" >> $GITHUB_ENV
-          echo "JWT_SECRET=my_jwt_secret" >> $GITHUB_ENV
-          echo "REDIS_HOST=localhost" >> $GITHUB_ENV
+          echo "DB_USER=myuser" >> $GITHUB_ENV
+          echo "DB_PASSWORD=mypassword" >> $GITHUB_ENV
+          echo "JWT_SECRET=supersecretkey" >> $GITHUB_ENV
+          echo "REDIS_HOST=redis" >> $GITHUB_ENV
           echo "REDIS_PORT=6379" >> $GITHUB_ENV
 
       # Step 5: Run Python Tests with Coverage (Ensure coverage > 85%)
@@ -42,14 +42,14 @@ jobs:
           sleep 10 # Wait for services to start
           docker-compose exec backend pytest --cov=src --cov-fail-under=85 --maxfail=1 --disable-warnings
         env:
-          DB_HOST_POSTGRES: localhost
+          DB_HOST_POSTGRES: postgres
           DB_PORT_POSTGRES: 5432
-          DB_HOST_MONGO: localhost
+          DB_HOST_MONGO: mongodb
           DB_PORT_MONGO: 27017
-          DB_USER: my_db_user
-          DB_PASSWORD: my_db_password
-          JWT_SECRET: my_jwt_secret
-          REDIS_HOST: localhost
+          DB_USER: myuser
+          DB_PASSWORD: mypassword
+          JWT_SECRET: supersecretkey
+          REDIS_HOST: redis
           REDIS_PORT: 6379
 
       # Step 6: Build Docker Images (only if tests and coverage > 85% pass)
