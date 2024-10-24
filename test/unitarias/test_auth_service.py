@@ -27,6 +27,8 @@ def test_authenticate_user_invalid_password(mocker):
     access_token = authenticate_user("username", "wrong_password")
     
     mock_get_user.assert_called_once_with("username")
+
+    print(hola)
     
     assert access_token is None
 

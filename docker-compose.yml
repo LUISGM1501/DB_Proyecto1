@@ -2,7 +2,7 @@ version: '3'
 services:
   backend:
     build: .
-    command: python src/app.py
+    command: python app.py
     volumes:
       - .:/app
     ports:
@@ -20,14 +20,9 @@ services:
     #env_file:
     #  - .env
     depends_on:
-      postgres:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - app-network
+      - postgres
+      - mongodb
+      - redis
 
   postgres:
     image: postgres:15.3
@@ -40,65 +35,19 @@ services:
       - ./init:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d redsocial"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
 
   mongodb:
     image: mongo:6.0.6
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-      MONGO_INITDB_DATABASE: redsocial
     volumes:
       - mongo-data:/data/db
-      - ./init/mongo:/docker-entrypoint-initdb.d/
     ports:
       - "27017:27017"
-    command: mongod --auth
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-    networks:
-      - app-network
 
   redis:
     image: redis:7.0.11
     ports:
       - "6379:6379"
-    command: redis-server --save 60 1 --loglevel warning
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - "8081:8081"
-    depends_on:
-      - redis
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
 
 volumes:
   postgres-data:
   mongo-data:
-  redis-data:
