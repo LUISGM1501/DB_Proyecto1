@@ -11,7 +11,7 @@ load_dotenv()
 def get_postgres_connection():
     try:
         connection = psycopg2.connect(
-            host=os.getenv('DB_HOST_POSTGRES'),  
+            host=os.getenv('postgres'),  
             port=os.getenv('DB_PORT_POSTGRES'),
             user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASSWORD'),
@@ -26,7 +26,7 @@ def get_postgres_connection():
 # Configuracion de MongoDB
 def get_mongo_connection():
     try:
-        client = MongoClient(os.getenv('DB_HOST_MONGO'), int(os.getenv('DB_PORT_MONGO'))) 
+        client = MongoClient(os.getenv('mongodb'), int(os.getenv('DB_PORT_MONGO'))) 
         db = client.redsocial
         print("Conexión a MongoDB exitosa")
         return db
@@ -38,7 +38,7 @@ def get_mongo_connection():
 def get_redis_connection():
     try:
         redis_client = redis.Redis(
-            host=os.getenv('REDIS_HOST'),
+            host=os.getenv('redis'),
             port=int(os.getenv('REDIS_PORT')),
             db=0,
             decode_responses=True

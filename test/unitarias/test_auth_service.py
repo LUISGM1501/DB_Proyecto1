@@ -28,7 +28,6 @@ def test_authenticate_user_invalid_password(mocker):
     
     mock_get_user.assert_called_once_with("username")
 
-    print(hola)
     
     assert access_token is None
 

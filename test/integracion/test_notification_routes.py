@@ -13,8 +13,6 @@ def client():
         with app.app_context():
             yield client
 
-print(hola)
-
 
 @patch('controllers.notification_controller.get_user_notifications')
 def test_get_notifications(mock_get_user_notifications, client):
