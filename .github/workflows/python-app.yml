@@ -1,6 +1,8 @@
 name: Docker Build and Python Tests
 
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - Andres2
