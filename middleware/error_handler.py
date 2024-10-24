@@ -1,6 +1,7 @@
 # middleware/error_handler.py
 from flask import jsonify
 
+
 def register_error_handlers(app):
     @app.errorhandler(400)
     def handle_400_error(e):

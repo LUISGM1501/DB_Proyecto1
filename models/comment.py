@@ -1,5 +1,6 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
 class Comment:
     def __init__(self, user_id, content, post_id=None, place_id=None, id=None):
         self.id = id
