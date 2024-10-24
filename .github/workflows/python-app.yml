@@ -1,12 +1,7 @@
 name: Docker Build and Python Tests
 
 on:
-  push:
-    branches:
-      - Andres2
-  pull_request:
-    branches:
-      - Andres2
+  workflow_dispatch:
 
 jobs:
   build_and_test:
