@@ -25,13 +25,13 @@ jobs:
       # Step 4: Set environment variables from GitHub Secrets
       - name: Set Environment Variables
         run: |
-            export DB_HOST_POSTGRES=localhost
+            export DB_HOST_POSTGRES=postgres
             export DB_PORT_POSTGRES=5432
-            export DB_HOST_MONGO=localhost
+            export DB_HOST_MONGO=mongodb
             export DB_PORT_MONGO=27017
-            export DB_USER=user
-            export DB_PASSWORD=secretpassword
-            export JWT_SECRET=secretkey
+            export DB_USER=myuser
+            export DB_PASSWORD=mypassword
+            export JWT_SECRET=supersecretkey
             export REDIS_HOST=localhost
             export REDIS_PORT=6379
 
