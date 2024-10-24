@@ -27,49 +27,52 @@ jobs:
           sudo apt-get update
           sudo apt-get install docker-compose -y
 
-      # Step 4: Log in to GitHub Container Registry
+      # Step 4: Set environment variables from GitHub Secrets
+      - name: Set Environment Variables
+        run: |
+            export DB_HOST_POSTGRES=localhost
+            export DB_PORT_POSTGRES=5432
+            export DB_HOST_MONGO=localhost
+            export DB_PORT_MONGO=27017
+            export DB_USER=user
+            export DB_PASSWORD=secretpassword
+            export JWT_SECRET=secretkey
+            export REDIS_HOST=localhost
+            export REDIS_PORT=6379
+
+      # Step 5: Run Python Tests with Coverage (Ensure coverage > 85%)
+      - name: Run Python Tests with Coverage
+        run: |
+          docker-compose up -d
+          sleep 10 # Wait for services to start
+          docker-compose exec backend pytest --cov=src --cov-fail-under=85 --maxfail=1 --disable-warnings
+        id: python-tests
+
+      # Step 6: Build Docker Images (only if tests and coverage > 85% pass)
+      - name: Build Docker images
+        if: steps.python-tests.conclusion == 'success'
+        run: docker-compose build
+
+      # Step 7: Log in to GitHub Container Registry (only if the build succeeds)
       - name: Log in to GitHub Container Registry
+        if: steps.python-tests.conclusion == 'success'
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 5: Set environment variables
-      - name: Set Environment Variables
-        run: |
-          echo DB_HOST_POSTGRES=${{ secrets.DB_HOST_POSTGRES }} >> $GITHUB_ENV
-          echo DB_PORT_POSTGRES=${{ secrets.DB_PORT_POSTGRES }} >> $GITHUB_ENV
-          echo DB_HOST_MONGO=${{ secrets.DB_HOST_MONGO }} >> $GITHUB_ENV
-          echo DB_PORT_MONGO=${{ secrets.DB_PORT_MONGO }} >> $GITHUB_ENV
-          echo DB_USER=${{ secrets.DB_USER }} >> $GITHUB_ENV
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> $GITHUB_ENV
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> $GITHUB_ENV
-          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> $GITHUB_ENV
-          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> $GITHUB_ENV
-
-      # Step 6: Build Docker Images
-      - name: Build Docker images
-        run: docker-compose build
-        if: success()
-
-      # Step 7: Tag and Push Docker Image to GitHub Container Registry
+      # Step 8: Tag and Push Docker Image to GitHub Container Registry
       - name: Tag and Push Docker Image to GitHub Container Registry
+        if: steps.python-tests.conclusion == 'success'
         run: |
           docker tag backend ghcr.io/${{ github.repository }}/backend:latest
           docker push ghcr.io/${{ github.repository }}/backend:latest
-        if: success()
 
-      # Step 8: Run Python Tests with Coverage
-      - name: Run Python Tests with Coverage
-        run: |
-          docker-compose up -d
-          sleep 10 # Esperar a que los servicios estén listos
-          docker-compose exec backend pytest --cov=src --cov-fail-under=85 --maxfail=1 --disable-warnings
-
-      # Step 9: Upload test artifacts
+      # Step 9: Upload test artifacts (using upload-artifact v4)
       - name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: ./test-results/  # Reemplaza con la ruta de tus resultados de prueba
+          path: ./test-results/  # Replace with the path to your test results
+
