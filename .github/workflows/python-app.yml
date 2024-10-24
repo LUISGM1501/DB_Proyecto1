@@ -3,11 +3,9 @@ name: Docker Build and Python Tests
 on:
   push:
     branches:
-      - main
       - Andres2
   pull_request:
     branches:
-      - main
       - Andres2
 
 jobs:
