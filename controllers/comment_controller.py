@@ -2,6 +2,7 @@ from models.comment import Comment
 from config.database import get_postgres_connection
 from controllers import post_controller, notification_controller
 
+
 # Crear un nuevo comentario 
 def create_comment(user_id, content, post_id=None, place_id=None):
     conn = get_postgres_connection()
