@@ -8,5 +8,3 @@ def authenticate_user(username, password):
         access_token = create_access_token(identity=user.id)
         return access_token
     return None
-
-    

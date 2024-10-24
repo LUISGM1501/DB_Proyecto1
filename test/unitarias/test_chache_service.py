@@ -1,5 +1,5 @@
 import pytest
-from src.services.cache_service import cache_post, get_cached_post, cache_popular_posts, get_cached_popular_posts
+from services.cache_service import cache_post, get_cached_post, cache_popular_posts, get_cached_popular_posts
 
 def test_cache_post(mocker):
     mock_redis = mocker.patch('services.cache_service.redis_client')

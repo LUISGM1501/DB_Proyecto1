@@ -1,5 +1,5 @@
 import pytest
-from src.controllers import reaction_controller
+from controllers import reaction_controller
 
 def test_add_or_update_reaction(mocker):
     mock_conn = mocker.patch('controllers.reaction_controller.get_postgres_connection')

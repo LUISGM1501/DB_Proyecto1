@@ -1,7 +1,7 @@
 import pytest
-from src.controllers import travel_list_controller
-from src.models.travel_list import TravelList
-from src.models.place import Place
+from controllers import travel_list_controller
+from models.travel_list import TravelList
+from models.place import Place
 
 def test_create_travel_list(mocker):
     mock_conn = mocker.patch('controllers.travel_list_controller.get_postgres_connection')

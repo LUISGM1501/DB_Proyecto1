@@ -1,6 +1,6 @@
 import pytest
-from src.controllers import post_controller
-from src.models.post import Post
+from controllers import post_controller
+from models.post import Post
 
 def test_create_post(mocker):
     mock_conn = mocker.patch('controllers.post_controller.get_postgres_connection')
