@@ -3,8 +3,8 @@ import pytest
 from unittest.mock import patch
 from flask_jwt_extended import decode_token
 from werkzeug.security import generate_password_hash
-from services.auth_service import authenticate_user
-from app import app
+from src.services.auth_service import authenticate_user
+from src.app import app
 
 def test_authenticate_user_success(mocker):
     mock_user = mocker.Mock()

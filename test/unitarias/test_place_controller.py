@@ -1,6 +1,6 @@
 import pytest
-from controllers import place_controller
-from models.place import Place
+from src.controllers import place_controller
+from src.models.place import Place
 
 def test_create_place(mocker):
     mock_conn = mocker.patch('controllers.place_controller.get_postgres_connection')
