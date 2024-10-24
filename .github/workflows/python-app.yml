@@ -15,7 +15,7 @@ jobs:
     steps:
       # Step 1: Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
@@ -50,7 +50,7 @@ jobs:
 
        # Step 7: Upload test artifacts (Usar upload-artifact v3)
       - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./test-results/  # Reemplaza con la ruta de tus resultados de prueba
