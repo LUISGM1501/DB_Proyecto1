@@ -1,7 +1,7 @@
 # tests/unit/test_comment_controller.py
 import pytest
-from controllers import comment_controller
-from models.comment import Comment
+from src.controllers import comment_controller
+from src.models.comment import Comment
 
 def test_create_comment_success(mocker):
     # Mock de la conexión a la base de datos y la consulta

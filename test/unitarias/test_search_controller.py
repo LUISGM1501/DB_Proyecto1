@@ -1,5 +1,5 @@
 import pytest
-from controllers import search_controller
+from src.controllers import search_controller
 
 def test_search_content(mocker):
     mock_conn = mocker.patch('controllers.search_controller.get_postgres_connection')

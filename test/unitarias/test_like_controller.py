@@ -1,6 +1,6 @@
 import pytest
-from controllers import like_controller
-from models.post import Post
+from src.controllers import like_controller
+from src.models.post import Post
 
 def test_add_like_success(mocker):
     mock_conn = mocker.patch('controllers.like_controller.get_postgres_connection')

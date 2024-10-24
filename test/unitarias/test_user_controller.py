@@ -1,6 +1,6 @@
 import pytest
-from controllers import user_controller
-from models.user import User
+from src.controllers import user_controller
+from src.models.user import User
 
 def test_create_user(mocker):
     mock_conn = mocker.patch('controllers.user_controller.get_postgres_connection')

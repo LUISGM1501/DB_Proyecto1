@@ -1,5 +1,5 @@
 import pytest
-from controllers import notification_controller
+from src.controllers import notification_controller
 
 def test_create_notification(mocker):
     mock_conn = mocker.patch('controllers.notification_controller.get_postgres_connection')

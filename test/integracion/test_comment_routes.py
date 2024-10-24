@@ -1,8 +1,8 @@
 import pytest
 from flask import Flask, jsonify
 from flask_jwt_extended import create_access_token
-from app import app
-from controllers import comment_controller
+from src.app import app
+from src.controllers import comment_controller
 from unittest.mock import patch
 
 @pytest.fixture

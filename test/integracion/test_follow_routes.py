@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 from flask_jwt_extended import create_access_token
-from app import app
+from src.app import app
 from unittest.mock import Mock
 
 @pytest.fixture

@@ -1,8 +1,8 @@
 # test/unitarias/test_follow_controller.py
 import pytest
-from controllers import follow_controller
-from models.user import User
-from models.post import Post
+from src.controllers import follow_controller
+from src.models.user import User
+from src.models.post import Post
 
 def test_follow_user_success(mocker):
     mock_conn = mocker.patch('controllers.follow_controller.get_postgres_connection')
