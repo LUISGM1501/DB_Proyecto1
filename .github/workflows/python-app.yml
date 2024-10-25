@@ -67,8 +67,10 @@ jobs:
       # Step 8: Tag and Push Docker Image to GitHub Container Registry
       - name: Tag and Push Docker Image to GitHub Container Registry
         run: |
-          docker tag backend ghcr.io/${{ toLower(github.repository) }}/backend:latest
-          docker push ghcr.io/${{ toLower(github.repository) }}/backend:latest
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          docker tag backend ghcr.io/$REPO_NAME/backend:latest
+          docker push ghcr.io/$REPO_NAME/backend:latest
+
 
           
       # Step 9: Upload test artifacts (using upload-artifact v4)
