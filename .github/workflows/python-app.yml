@@ -39,9 +39,9 @@ jobs:
       # Step 5: Run Python Tests with Coverage (Ensure coverage > 85%)
       - name: Run Python Tests with Coverage
         run: |
+          docker-compose exec -T backend pytest --cov=. --cov-fail-under=85 --maxfail=1 --disable-warnings
           docker-compose up -d
           sleep 10 # Wait for services to start
-          docker-compose exec -T backend pytest --cov=. --cov-fail-under=85 --maxfail=1 --disable-warnings
         env:
           DB_HOST_POSTGRES: postgres
           DB_PORT_POSTGRES: 5432
