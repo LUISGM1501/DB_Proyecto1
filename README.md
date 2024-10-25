@@ -1,50 +1,68 @@
 # Red Social de Viajes
 
-Este proyecto es el backend de una red social orientada a compartir experiencias de viaje, utilizando Flask para la API, PostgreSQL, MongoDB y Redis como bases de datos, y desplegado mediante Docker.
+Este proyecto es el backend de una red social orientada a compartir experiencias de viaje, utilizando Flask para la API, PostgreSQL como base de datos principal y Redis para caché, todo desplegado mediante Docker.
 
 ## 1. Descripción General
 
 El sistema permite a los usuarios realizar publicaciones sobre viajes, interactuar con otros mediante comentarios, likes, y gestionar listas de destinos turísticos. Todo el backend está contenido en Docker para facilitar el despliegue y replicación.
 
-El proyecto se basa en tres tecnologías principales de bases de datos:
+El proyecto se basa en dos tecnologías principales de bases de datos:
 
-- PostgreSQL para la gestión de datos estructurados (usuarios, publicaciones, etc.).
-- MongoDB para almacenamiento no estructurado o semi-estructurado (por ejemplo, listas de viajes).
-- Redis como caché para optimizar la carga de publicaciones populares y gestionar sesiones.
+- **PostgreSQL:** Para la gestión de todos los datos estructurados, incluyendo:
+  - Usuarios y autenticación
+  - Publicaciones y contenido
+  - Lugares y destinos turísticos
+  - Listas de viajes
+  - Comentarios y reacciones
+  - Interacciones sociales (likes, follows)
+
+- **Redis:** Como sistema de caché para:
+  - Optimizar la carga de publicaciones populares
+  - Gestionar sesiones de usuario
+  - Almacenar datos temporales
+  - Implementar rate limiting
+  - Mejorar el rendimiento general
 
 ## 2. Requisitos del Proyecto
 
-### Tecnologías Utilizadas
+### 2.1 Tecnologías Utilizadas
 
-- Flask para crear la API web:
+- **Flask para la API web:**
   ```bash
   pip install flask
   ```
 
-- python-dotenv para manejar variables de entorno:
+- **PostgreSQL y su conector:**
   ```bash
-  pip install python-dotenv
+  pip install psycopg2-binary
   ```
 
-- psycopg2 para conectar a PostgreSQL:
-  ```bash
-  pip install psycopg2
-  ```
-
-- pymongo para conectar a MongoDB:
-  ```bash
-  pip install pymongo
-  ```
-
-- redis para conectar a Redis:
+- **Redis para caché:**
   ```bash
   pip install redis
   ```
 
-### Otras dependencias
-- pytest y pytest-cov para pruebas unitarias e integración.
+- **Gestión de JWT y variables de entorno:**
+  ```bash
+  pip install flask-jwt-extended python-dotenv
+  ```
+
+### 2.2 Dependencias de Desarrollo
+- **Testing:**
+  ```bash
+  pip install pytest pytest-cov
+  ```
+
+### 2.3 Requisitos de Sistema
+- Docker y Docker Compose
+- Python 3.9+
+- PostgreSQL 15.3+
+- Redis 7.0.11+
+
 
 ## 3. Instrucciones de Instalación y Ejecución
+
+### 3.1 Configuración Inicial
 
 1. Clonar el repositorio:
    ```bash
@@ -64,328 +82,496 @@ El proyecto se basa en tres tecnologías principales de bases de datos:
    pip install -r requirements.txt
    ```
 
-4. Configurar las variables de entorno: 
-   Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables:
-   ```
-   FLASK_APP=app.py
-   FLASK_ENV=development
-   ```
+### 3.2 Configuración del Entorno
 
-5. Desplegar con Docker:
-   Asegúrate de tener Docker y Docker Compose instalados, luego ejecuta:
+Crear un archivo `.env` en la raíz del proyecto con las siguientes variables:
+```env
+DB_HOST_POSTGRES=postgres
+DB_PORT_POSTGRES=5432
+DB_USER=myuser
+DB_PASSWORD=mypassword
+JWT_SECRET=supersecretkey
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+### 3.3 Despliegue con Docker
+
+1. Construir y levantar los contenedores:
    ```bash
    docker-compose up --build
    ```
 
-6. Ejecutar el script dentro del contenedor:
-   Con el contenedor corriendo, ejecuta el script para instalar herramientas:
+2. Verificar que los servicios estén funcionando:
    ```bash
-   docker exec -it db_proyecto1-backend-1 bash
-   ./scripts/install_tools.sh
+   docker-compose ps
    ```
 
-## 4. Verificación de Conexiones de Base de Datos
+3. Para detener los servicios:
+   ```bash
+   docker-compose down
+   ```
 
-Una vez que el contenedor está corriendo, puedes verificar la conexión con las bases de datos:
+### 3.4 Verificación de Servicios
 
-- MongoDB:
-  ```bash
-  mongo --host mongodb --port 27017
-  ```
+1. PostgreSQL:
+   ```bash
+   docker exec -it db_proyecto1-postgres-1 psql -U myuser -d redsocial
+   ```
 
-- Redis:
-  ```bash
-  redis-cli -h redis -p 6379 ping
-  ```
+2. Redis:
+   ```bash
+   docker exec -it db_proyecto1-redis-1 redis-cli ping
+   ```
 
-- PostgreSQL:
-  ```bash
-  ping postgres
-  ```
+## 4. Estructura del Proyecto
 
-## 5. Estructura del Proyecto
+```
+DB_Proyecto1/
+├── app.py                  # Punto de entrada de la aplicación
+├── config/                 # Configuraciones
+│   ├── __init__.py
+│   └── database.py        # Configuración de bases de datos
+├── controllers/           # Controladores
+│   ├── user_controller.py
+│   ├── post_controller.py
+│   └── ...
+├── models/               # Modelos de datos
+│   ├── user.py
+│   ├── post.py
+│   └── ...
+├── routes/              # Rutas de la API
+│   ├── user_routes.py
+│   ├── post_routes.py
+│   └── ...
+├── services/           # Servicios
+│   ├── auth_service.py
+│   └── cache_service.py
+├── tests/             # Pruebas
+│   ├── integration/
+│   └── unit/
+├── docker-compose.yml  # Configuración de Docker
+└── requirements.txt    # Dependencias del proyecto
+```
 
-## 6. Documentación de MongoDB en la Red Social de Viajes
+## 5. Base de Datos
 
-### 6.1 Justificación de Uso
-MongoDB fue seleccionado para almacenar ciertos tipos de datos en nuestra aplicación por las siguientes razones:
+### 5.1 Esquema PostgreSQL
 
-#### 6.1.1 Datos Flexibles y Dinámicos
-- Detalles de Viajes: La información de viajes puede variar significativamente entre usuarios. MongoDB permite almacenar datos con estructura flexible sin necesidad de modificar el esquema.
-- Reseñas de Lugares: Las reseñas pueden incluir diferentes tipos de contenido y metadatos que serían complejos de manejar en una base de datos relacional.
-1.2 Consultas Eficientes
-- Logs de Actividad: MongoDB es eficiente para escribir y consultar grandes volúmenes de datos de registro.
-- Media Links: Facilita el almacenamiento y recuperación de colecciones de enlaces multimedia.
-#### 6.1.3 Escalabilidad
-- Permite escalar horizontalmente para manejar grandes volúmenes de datos.
-- Proporciona índices eficientes para consultas frecuentes.
+El sistema utiliza una base de datos relacional PostgreSQL con las siguientes tablas principales:
 
-### 6.2 Estructura de Datos
+#### Users
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    bio TEXT,
+    profile_picture_url VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-#### 6.2.1 Colecciones
+#### Posts
+```sql
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    search_vector tsvector
+);
+```
 
-**travel_details**
-```json
-{
-  _id: ObjectId,
-  user_id: Int,
-  title: String,
-  description: String,
-  places: Array[{
-    id: Int,
-    name: String,
-    coordinates: {
-      lat: Float,
-      lng: Float
+#### Places
+```sql
+CREATE TABLE places (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    search_vector tsvector
+);
+```
+
+
+## 6. Sistema de Caché con Redis
+
+### 6.1 Estructuras de Datos en Redis
+
+#### Sesiones de Usuario
+```
+Key: "session:{user_id}"
+Type: Hash
+Fields:
+- user_id: ID del usuario
+- username: Nombre de usuario
+- last_login: Último acceso
+TTL: 3600 segundos (1 hora)
+```
+
+#### Posts Populares
+```
+Key: "popular_posts"
+Type: Sorted Set
+Score: Número de likes + comentarios
+Members: IDs de posts
+TTL: 300 segundos (5 minutos)
+```
+
+#### Rate Limiting
+```
+Key: "rate_limit:{user_id}"
+Type: String (Counter)
+TTL: 60 segundos
+```
+
+### 6.2 Ejemplos de Uso
+
+```python
+# Almacenar datos de sesión
+redis_client.hset(f"session:{user_id}", 
+    mapping={
+        "user_id": user_id,
+        "username": username,
+        "last_login": datetime.now().isoformat()
     }
-  }],
-  start_date: Date,
-  end_date: Date,
-  budget: {
-    currency: String,
-    amount: Float
-  },
-  expenses: Array[{
-    category: String,
-    amount: Float,
-    description: String
-  }],
-  itinerary: Array[{
-    day: Int,
-    activities: Array[String]
-  }],
-  tips: Array[String],
-  photos: Array[String],
-  created_at: Date
-}
+)
+redis_client.expire(f"session:{user_id}", 3600)
+
+# Actualizar posts populares
+redis_client.zadd("popular_posts", {post_id: score})
+
+# Rate limiting
+requests = redis_client.incr(f"rate_limit:{user_id}")
+redis_client.expire(f"rate_limit:{user_id}", 60)
 ```
 
-**user_stats**
-```json
+## 7. Modelo de Datos
+
+### 7.1 Diagrama Entidad-Relación
+
+![Diagrama ER](./Imagenes/ModeloDatos2.png)
+
+### 7.2 Relaciones Principales
+
+1. **Usuario - Posts**
+   - Un usuario puede crear múltiples posts
+   - Cada post pertenece a un solo usuario
+
+2. **Usuario - Places**
+   - Los usuarios pueden crear y seguir lugares
+   - Un lugar puede ser seguido por múltiples usuarios
+
+3. **Usuario - TravelLists**
+   - Un usuario puede crear múltiples listas de viaje
+   - Cada lista pertenece a un usuario
+
+4. **Posts - Comments**
+   - Un post puede tener múltiples comentarios
+   - Cada comentario pertenece a un post
+
+5. **Places - TravelLists**
+   - Un lugar puede estar en múltiples listas
+   - Una lista puede contener múltiples lugares
+
+### 7.3 Índices y Optimizaciones
+
+#### PostgreSQL
+```sql
+-- Búsqueda de texto completo
+CREATE INDEX posts_search_idx ON posts USING GIN (search_vector);
+CREATE INDEX places_search_idx ON places USING GIN (search_vector);
+
+-- Índices para relaciones frecuentes
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_likes_post_id ON likes(post_id);
+```
+
+## 8. Documentación de la API
+
+### 8.1 Autenticación
+
+Todas las rutas (excepto login y registro) requieren un token JWT en el header:
+```
+Authorization: Bearer <token>
+```
+
+#### Endpoints de Autenticación
+
+```http
+POST /login
+Content-Type: application/json
+
 {
-  _id: ObjectId,
-  user_id: Int,
-  total_posts: Int,
-  total_likes_received: Int,
-  total_comments_received: Int,
-  places_visited: Array[Int],
-  countries_visited: Array[String],
-  created_at: Date,
-  last_updated: Date
+    "username": "string",
+    "password": "string"
 }
-```
 
-**activity_logs**
-```json
+Response:
 {
-  _id: ObjectId,
-  user_id: Int,
-  activity_type: String,
-  details: Object,
-  timestamp: Date
+    "access_token": "string"
 }
 ```
 
-**place_reviews**
-```json
+### 8.2 Usuarios
+
+#### Crear Usuario
+```http
+POST /users
+Content-Type: application/json
+
 {
-  _id: ObjectId,
-  place_id: Int,
-  user_id: Int,
-  rating: Int,
-  detailed_text: String,
-  visit_date: Date,
-  recommendations: Array[String],
-  tips: Array[String],
-  photos: Array[String],
-  categories: Array[String],
-  price_level: Int,
-  visited_with: String,
-  highlights: Array[String],
-  created_at: Date,
-  updated_at: Date
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "bio": "string",
+    "profile_picture_url": "string"
 }
 ```
 
-**media_links**
-```json
+#### Obtener Usuario
+```http
+GET /users/{user_id}
+
+Response:
 {
-  _id: ObjectId,
-  reference_id: Int,
-  reference_type: String,
-  links: Array[{
-    url: String,
-    type: String,
-    description: String
-  }],
-  created_at: Date
+    "id": integer,
+    "username": "string",
+    "email": "string",
+    "bio": "string",
+    "profile_picture_url": "string"
 }
 ```
 
-#### 6.2.3 Índices
-Se han creado los siguientes índices para optimizar las consultas más frecuentes:
+### 8.3 Posts
 
-**travel_details**
-```bash
-db.travel_details.createIndex({ "user_id": 1 })
-db.travel_details.createIndex({ "created_at": -1 })
+#### Crear Post
+```http
+POST /posts
+Content-Type: application/json
+
+{
+    "content": "string"
+}
+
+Response:
+{
+    "message": "Post created successfully",
+    "post_id": integer
+}
 ```
 
-**user_stats**
-```bash
-db.user_stats.createIndex({ "user_id": 1 }, { unique: true })
+#### Obtener Posts
+```http
+GET /posts?page=1&page_size=10
+
+Response:
+{
+    "posts": [
+        {
+            "id": integer,
+            "content": "string",
+            "user_id": integer,
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        }
+    ],
+    "total_count": integer,
+    "page": integer,
+    "page_size": integer
+}
 ```
 
-**activity_logs**
-db.activity_logs.createIndex({ "user_id": 1 })
-db.activity_logs.createIndex({ "timestamp": -1 })
+### 8.4 Lugares
 
-**place_reviews**
-```bash
-db.place_reviews.createIndex({ "place_id": 1 })
-db.place_reviews.createIndex({ "user_id": 1 })
-db.place_reviews.createIndex({ "created_at": -1 })
+#### Crear Lugar
+```http
+POST /places
+Content-Type: application/json
 
-**media_links**
-```bash
-db.media_links.createIndex({ "reference_id": 1, "reference_type": 1 }, { unique: true })
+{
+    "name": "string",
+    "description": "string",
+    "city": "string",
+    "country": "string"
+}
 ```
 
-## 7. Integración con PostgreSQL
-MongoDB complementa a PostgreSQL de la siguiente manera:
+#### Buscar Lugares
+```http
+GET /places/search?query=string&page=1&page_size=10
 
-- PostgreSQL: Almacena datos estructurados y relacionales como usuarios, lugares básicos, y relaciones entre entidades.
-- MongoDB: Almacena datos semi-estructurados y detalles extensos que requieren flexibilidad.
+Response:
+{
+    "places": [
+        {
+            "id": integer,
+            "name": "string",
+            "description": "string",
+            "city": "string",
+            "country": "string"
+        }
+    ],
+    "total": integer
+}
+```
 
-## 8. Modelo de datos 
+## 9. Testing
 
-![Modelo de datos](./Imagenes/ModeloDatos.png)
+### 9.1 Configuración de Pruebas
 
-El modelo general describe cómo se integran diferentes elementos en un sistema que combina múltiples funciones, desde la creación de contenido hasta la interacción social, la planificación de viajes y la gestión de actividades. Este modelo unificado abarca tanto las funcionalidades relacionadas con usuarios, publicaciones, lugares, listas de viajes, comentarios y reacciones, como la forma en que todos estos elementos interactúan entre sí.
+El proyecto utiliza pytest para las pruebas unitarias e integración. La configuración se encuentra en `pytest.ini`:
 
-### Relaciones Principales entre Entidades
+```ini
+[pytest]
+pythonpath = .
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
 
-#### Usuario:
-Los usuarios son el centro del sistema y están relacionados con múltiples acciones y objetos:
+markers =
+    unit: Unit tests
+    integration: Integration tests
+    api: API tests
 
-- Crea publicaciones: Los usuarios pueden crear publicaciones, donde comparten contenido que luego puede recibir comentarios, likes y reacciones.
-- Crea listas de viajes: Los usuarios pueden generar listas de viajes que contienen múltiples lugares, los cuales pueden ser seguidos por otros usuarios.
-- Registra detalles de viajes: Cada usuario puede registrar detalles de sus viajes, como fechas, lugares visitados, presupuesto, etc., lo que permite un seguimiento detallado de su experiencia.
-- Escribe comentarios: Los usuarios pueden comentar tanto en publicaciones como en lugares, fomentando la interacción social en el sistema.
-- Da likes y reacciona: Los usuarios tienen la capacidad de dar "likes" o expresar diferentes reacciones a las publicaciones o lugares, lo que añade una capa de interacción emocional al contenido.
+addopts = 
+    --verbose
+    --tb=short
+    --cov=.
+    --cov-report=html
+    --cov-report=term-missing
+    --cov-fail-under=85
+    --no-cov-on-fail
+```
 
-#### Post (Publicaciones):
-Las publicaciones son piezas de contenido generadas por los usuarios que pueden recibir comentarios, likes y reacciones. Estas publicaciones también pueden contener enlaces multimedia como imágenes o videos, ampliando la experiencia visual del contenido.
+### 9.2 Ejecutar Pruebas
 
-#### Place (Lugares):
-Los lugares son una entidad clave en el sistema, ya que los usuarios pueden interactuar con ellos mediante comentarios y likes, y pueden incluir enlaces de imágenes para mostrar fotos de esos destinos. Además, los lugares pueden formar parte de las listas de viajes creadas por los usuarios, lo que permite organizar destinos favoritos o futuros en colecciones específicas.
+```bash
+# Ejecutar todas las pruebas
+pytest tests/
 
-#### TravelList (Listas de Viajes):
-Las listas de viajes son colecciones de lugares seleccionados por los usuarios. Estas listas pueden ser seguidas por otros usuarios, promoviendo una interacción social en torno a los intereses compartidos de viajes. Además, las listas de viajes son asociadas a través de la tabla TravelListPlace, que enlaza cada lugar con una lista específica.
+# Ejecutar pruebas con cobertura
+pytest --cov=tests tests/
 
-#### Comentarios y Reacciones:
-Los comentarios y reacciones permiten a los usuarios interactuar tanto con publicaciones como con lugares. Cada publicación o lugar puede recibir múltiples comentarios y reacciones, creando un espacio para la interacción y retroalimentación entre usuarios. Las reacciones amplían esta interacción más allá de los simples "likes", permitiendo expresar diferentes emociones frente al contenido.
+# Ejecutar pruebas específicas
+pytest tests/unit/
+pytest tests/integration/
 
-#### Detalles del Viaje:
-Los detalles del viaje permiten a los usuarios almacenar información más extensa sobre sus experiencias de viaje, como itinerarios, gastos, fotos y reseñas de los lugares que han visitado. Estos detalles se conectan con reseñas de lugares (PlaceReview), lo que permite que los usuarios den feedback detallado sobre sus experiencias.
+# Ejecutar una prueba específica
+pytest tests/unit/test_user_controller.py -v
+```
 
-#### Enlaces Multimedia:
-Los enlaces multimedia (MediaLinks) permiten asociar contenido visual a diferentes partes del sistema, como publicaciones, lugares o reseñas de viajes. Esto enriquece la experiencia del usuario, proporcionando más contexto visual a las interacciones.
+### 9.3 Estructura de Pruebas
 
-### Interacción Social y Participación
+```
+tests/
+├── integration/
+│   ├── test_user_routes.py
+│   ├── test_post_routes.py
+│   └── test_place_routes.py
+└── unit/
+    ├── test_user_controller.py
+    ├── test_post_controller.py
+    └── test_place_controller.py
+```
 
-El modelo general establece una sólida estructura de interacción social entre los usuarios a través de:
+## 10. Despliegue y CI/CD
 
-- Comentarios en publicaciones y lugares.
-- Likes y reacciones a estos elementos, fomentando la interacción emocional y el feedback rápido.
-- Seguir listas de viajes, que permite a los usuarios interactuar en torno a intereses comunes.
+### 10.1 Pipeline de GitHub Actions
 
-Además, los usuarios pueden explorar las experiencias de otros mediante reseñas de lugares, donde se comparten recomendaciones, fotos y consejos, creando una comunidad centrada en los viajes.
+```yaml
+name: CI/CD Pipeline
 
-### Organización de la Información
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-La estructura del modelo también refleja una organización clara y eficiente de la información:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15.3
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mypassword
+          POSTGRES_DB: redsocial
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      redis:
+        image: redis:7.0.11
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-- Publicaciones y lugares están conectados a través de comentarios, likes y reacciones, permitiendo una interacción fluida.
-- Listas de viajes funcionan como colecciones organizadas de lugares, que a su vez pueden ser seguidas por otros usuarios.
-- Enlaces multimedia añaden una capa visual tanto a publicaciones como a lugares, lo que ayuda a enriquecer el contenido que se comparte en la plataforma.
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests
+      run: |
+        pytest --cov=.
+```
 
-En conjunto, el modelo general unifica todas estas entidades para ofrecer una plataforma rica en funciones, donde los usuarios pueden interactuar entre sí, compartir sus experiencias de viaje y consumir contenido visual, todo mientras se organiza de manera coherente y estructurada.
+### 10.2 Gestión de Secretos
 
-### 8.1. Modelo de datos en PostgreSQL
+Las variables sensibles se manejan a través de secretos de GitHub:
 
-![Modelo de datos en PostgreSQL](./Imagenes/PostgreSQL.png)
+- `DB_PASSWORD`
+- `JWT_SECRET`
+- `REDIS_PASSWORD`
 
-En el modelo de PostgreSQL, estamos utilizando una base de datos relacional que se ajusta a un diseño estructurado y normalizado. Las entidades clave son usuarios, publicaciones, lugares, listas de viajes, comentarios y "likes". A continuación, una explicación detallada de cada clase:
+### 10.3 Monitoreo
 
-#### Usuario:
-Este modelo representa a los usuarios registrados en la plataforma. Cada usuario tiene un id único (clave primaria), un nombre de usuario (username), un correo electrónico (email), una contraseña (password), una biografía (bio), una URL de imagen de perfil (profile_picture_url), y dos campos de marca de tiempo para seguir la fecha de creación y actualización del usuario.
+Se recomienda implementar monitoreo usando herramientas como:
 
-Relaciones: Un usuario puede crear múltiples publicaciones (Post).
+- Prometheus para métricas
+- Grafana para visualización
+- ELK Stack para logs
 
-#### Post (Publicación):
-Este modelo representa una publicación hecha por un usuario. Contiene un id único, un user_id que actúa como clave foránea a la tabla de usuarios, el contenido de la publicación (content), y dos campos de tiempo (created_at, updated_at). Además, incluye un search_vector, que es utilizado para mejorar las búsquedas de texto dentro de las publicaciones.
+## 11. Consideraciones de Seguridad
 
-Relaciones: Una publicación puede tener múltiples comentarios y recibir múltiples "likes".
+1. **Autenticación y Autorización**
+   - JWT para autenticación
+   - Rate limiting por usuario
+   - Sesiones invalidadas automáticamente
 
-#### Place (Lugar):
-Este modelo representa un lugar que puede ser mencionado o relacionado en una publicación o en la lista de viajes de un usuario. Contiene un id, nombre (name), descripción (description), ciudad (city), país (country), y campos de tiempo. También utiliza un search_vector para facilitar búsquedas en la plataforma.
+2. **Bases de Datos**
+   - Conexiones seguras a PostgreSQL
+   - Contraseñas hasheadas
+   - Prepared statements para prevenir SQL injection
 
-Relaciones: Un lugar puede recibir comentarios y "likes" de los usuarios.
-
-#### TravelList (Lista de Viajes):
-La lista de viajes permite a los usuarios crear colecciones de lugares que desean visitar o que han visitado. Contiene un id, un user_id como clave foránea que conecta la lista con un usuario, un nombre y descripción.
-
-Relaciones: Una lista de viajes puede contener múltiples lugares.
-
-#### Comment (Comentario):
-Este modelo representa los comentarios hechos por los usuarios, que pueden estar asociados a publicaciones o lugares. Tiene un id único, claves foráneas de usuario (user_id), publicación (post_id), y lugar (place_id).
-
-Relaciones: Un comentario pertenece a un usuario y puede estar asociado tanto a una publicación como a un lugar.
-
-#### Like (Me Gusta):
-El modelo de "like" permite a los usuarios marcar publicaciones o lugares con "me gusta". Tiene un id único, un user_id como clave foránea y puede estar relacionado con una publicación (post_id) o un lugar (place_id).
-
-### 8.2. Modelo de datos en MongoDB
-
-![Modelo de datos en MongoDB](./Imagenes/MongoDB.png)
-
-En MongoDB, el enfoque es menos estructurado y está orientado a almacenar grandes cantidades de información que pueden variar en estructura. En este caso, se utilizan documentos JSON para representar los datos.
-
-#### TravelDetails:
-Este modelo guarda detalles extensos sobre los viajes del usuario. Contiene un _id único, el user_id del propietario, un title del viaje, description, y places que es un array de los lugares visitados. Además, incluye fechas (start_date, end_date), budget para el presupuesto del viaje, y arrays de expenses (gastos), itinerary (itinerario), tips (consejos) y photos.
-
-Relaciones: Un detalle de viaje puede contener múltiples reseñas de lugares y asociarse a enlaces multimedia.
-
-#### UserStats:
-Almacena estadísticas relacionadas con los usuarios, como el número total de publicaciones (total_posts), likes recibidos (total_likes_received), y comentarios recibidos (total_comments_received). También guarda un historial de lugares y países visitados por el usuario.
-
-Relaciones: Este modelo está principalmente diseñado para facilitar el análisis de las estadísticas del usuario.
-
-#### ActivityLogs:
-Guarda un registro de todas las actividades del usuario en la plataforma, incluyendo el tipo de actividad (activity_type), detalles y la marca de tiempo de cuándo ocurrió.
-
-#### PlaceReview:
-Este modelo almacena las reseñas de los lugares visitados por los usuarios, con un _id, el place_id, y el user_id. Incluye una calificación (rating), un texto detallado sobre la reseña (detailed_text), la fecha de la visita, recomendaciones, consejos, fotos, y un nivel de precios (price_level).
-
-Relaciones: Las reseñas están asociadas a lugares y viajes.
-
-#### MediaLinks:
-Almacena enlaces multimedia relacionados con viajes, publicaciones, o lugares. Se asocian a un reference_id y un reference_type para identificar qué tipo de contenido multimedia están representando (viaje, lugar, etc.).
-
-### 8.3. Modelo de datos en Redis
-
-![Modelo de datos en Redis](./Imagenes/Redis.png)
-
-Redis se utiliza aquí principalmente para almacenar en caché información que requiere un acceso rápido, lo que mejora el rendimiento de la aplicación. Este modelo está diseñado para manejar diferentes tipos de datos que son consultados con frecuencia, reduciendo así la carga en las bases de datos primarias.
-
-#### RedisCache:
-Este modelo tiene varias estructuras clave para mejorar la eficiencia del backend:
-
-- session: Guarda información de sesión del usuario, lo que permite mantener a los usuarios autenticados sin realizar consultas continuas a la base de datos relacional.
-- post: Almacena en caché publicaciones populares para que puedan ser accedidas rápidamente sin consultas a la base de datos.
-- popular_posts: Es un array que contiene los identificadores de publicaciones más populares, lo que permite obtener esta información rápidamente.
-- comments: Almacena los comentarios asociados a publicaciones para reducir la latencia en las consultas.
-- rate_limit:userId: Controla las tasas de acción de los usuarios (como solicitudes a la API), permitiendo implementar una limitación de frecuencia para evitar el abuso de recursos.
-
-Relaciones: Redis se utiliza principalmente como una capa de caché, y no mantiene relaciones entre las entidades, pero sí contiene copias temporales de las mismas para mejorar el rendimiento.
+3. **API**
+   - Validación de entrada
+   - Sanitización de datos
+   - CORS configurado apropiadamente
