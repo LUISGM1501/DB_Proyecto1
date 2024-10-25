@@ -41,7 +41,7 @@ jobs:
         run: |
           docker-compose up -d
           sleep 10 # Wait for services to start
-          docker-compose exec -T backend pytest --cov=src --cov-fail-under=85 --maxfail=1 --disable-warnings
+          docker-compose exec -T backend pytest --cov=. --cov-fail-under=85 --maxfail=1 --disable-warnings
         env:
           DB_HOST_POSTGRES: postgres
           DB_PORT_POSTGRES: 5432
