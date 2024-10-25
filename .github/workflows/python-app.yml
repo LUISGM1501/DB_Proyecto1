@@ -45,7 +45,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}  # Asegúrate de que este token tiene los permisos necesarios
+          password: ${{ secrets.GH_TOKEN }}  # Asegúrate de que este token tiene los permisos necesarios
 
       # Step 7: Tag and Push Docker Image to GitHub Container Registry
       - name: Tag and Push Docker Image to GitHub Container Registry
