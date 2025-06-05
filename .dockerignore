@@ -36,5 +36,13 @@ ENV/
 # Project specific
 coverage_html_report/
 tests/__pycache__/
+tests/integration/__pycache__/
+tests/unit/__pycache__/
 .pytest_cache/
 *.db
+
+# Ignorar carpeta de entorno virtual
+venv/
+.env
+.venv
+ENV/

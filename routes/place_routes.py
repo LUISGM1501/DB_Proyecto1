@@ -1,3 +1,4 @@
+# routes/place_routes.py
 from flask import Blueprint, request, jsonify
 from controllers import place_controller
 from flask_jwt_extended import jwt_required

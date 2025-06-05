@@ -1,3 +1,4 @@
+# routes/post_routes.py
 from flask import Blueprint, request, jsonify
 from controllers import post_controller
 from flask_jwt_extended import jwt_required, get_jwt_identity

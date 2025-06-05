@@ -1,3 +1,4 @@
+# scripts/install_tools.sh
 /bin/bash
 
 # Actualizar los paquetes

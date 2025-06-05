@@ -1,3 +1,4 @@
+# services/auth_service.py
 from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
 from controllers import user_controller
