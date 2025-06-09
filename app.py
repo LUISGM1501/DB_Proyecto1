@@ -13,6 +13,7 @@ from routes.reaction_routes import reaction_routes
 from routes.search_routes import search_routes
 from routes.follow_routes import follow_routes
 from routes.notification_routes import notification_routes
+from routes.trip_routes import trip_routes
 from middleware.error_handler import register_error_handlers
 import os
 
@@ -43,6 +44,7 @@ app.register_blueprint(reaction_routes)
 app.register_blueprint(search_routes)
 app.register_blueprint(follow_routes)
 app.register_blueprint(notification_routes)
+app.register_blueprint(trip_routes)
 
 # Establecer conexiones a las bases de datos
 postgres_conn = get_postgres_connection()
