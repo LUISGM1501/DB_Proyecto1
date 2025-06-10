@@ -1,5 +1,5 @@
-import pytest
 from unittest.mock import patch
+import pytest
 from flask_jwt_extended import create_access_token
 from app import app
 from unittest.mock import Mock
@@ -16,7 +16,8 @@ def client():
 def test_follow_user(mock_follow_user, client):
     mock_follow_user.return_value = 1 
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.post(
         '/follow/2',  
@@ -25,13 +26,14 @@ def test_follow_user(mock_follow_user, client):
 
     assert response.status_code == 201
     assert response.json == {"message": "User followed successfully", "follow_id": 1}
-    mock_follow_user.assert_called_once_with(1, 2)
+    mock_follow_user.assert_called_once_with("1", 2)  # Cambiado a string
 
 @patch('controllers.follow_controller.unfollow_user')
 def test_unfollow_user(mock_unfollow_user, client):
     mock_unfollow_user.return_value = 1  
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.post(
         '/unfollow/2',
@@ -40,7 +42,7 @@ def test_unfollow_user(mock_unfollow_user, client):
 
     assert response.status_code == 200
     assert response.json == {"message": "User unfollowed successfully", "follow_id": 1}
-    mock_unfollow_user.assert_called_once_with(1, 2)
+    mock_unfollow_user.assert_called_once_with("1", 2)  # Cambiado a string
 
 @patch('controllers.follow_controller.get_followed_users')
 def test_get_followed_users(mock_get_followed_users, client):
@@ -60,7 +62,8 @@ def test_get_followed_users(mock_get_followed_users, client):
 
     mock_get_followed_users.return_value = [user_mock_1, user_mock_2]
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.get(
         '/following',
@@ -70,7 +73,7 @@ def test_get_followed_users(mock_get_followed_users, client):
     assert response.status_code == 200, f"Unexpected error: {response.get_json()}"
     assert len(response.json) == 2
     assert response.json[0]['username'] == 'user2'
-    mock_get_followed_users.assert_called_once_with(1)
+    mock_get_followed_users.assert_called_once_with("1")  # Cambiado a string
 
 @patch('controllers.follow_controller.get_followers')
 def test_get_followers(mock_get_followers, client):
@@ -90,7 +93,8 @@ def test_get_followers(mock_get_followers, client):
 
     mock_get_followers.return_value = [user_mock_1, user_mock_2]
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.get(
         '/followers',
@@ -100,7 +104,7 @@ def test_get_followers(mock_get_followers, client):
     assert response.status_code == 200, f"Unexpected error: {response.get_json()}"
     assert len(response.json) == 2
     assert response.json[0]['username'] == 'user2'
-    mock_get_followers.assert_called_once_with(1)
+    mock_get_followers.assert_called_once_with("1")  # Cambiado a string
 
 @patch('controllers.follow_controller.get_feed')
 def test_get_feed(mock_get_feed, client):
@@ -110,7 +114,8 @@ def test_get_feed(mock_get_feed, client):
         {"id": 2, "content": "Test post 2", "user_id": 3}
     ]
     
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.get(
         '/feed?page=1&page_size=10',
@@ -120,4 +125,4 @@ def test_get_feed(mock_get_feed, client):
     assert response.status_code == 200
     assert len(response.json) == 2
     assert response.json[0]['content'] == 'Test post 1'
-    mock_get_feed.assert_called_once_with(1, 1, 10)
+    mock_get_feed.assert_called_once_with("1", 1, 10)  # Cambiado a string

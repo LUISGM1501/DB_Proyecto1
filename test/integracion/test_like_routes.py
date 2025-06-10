@@ -1,9 +1,9 @@
 # test/integracion/test_like_routes.py
 
+from unittest.mock import patch
 import pytest
 from flask_jwt_extended import create_access_token
 from app import app
-from unittest.mock import patch
 
 @pytest.fixture
 def client():
@@ -17,7 +17,8 @@ def client():
 def test_add_like_success(mock_add_like, client):
     mock_add_like.return_value = True
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.post(
         '/likes',
@@ -35,7 +36,8 @@ def test_add_like_success(mock_add_like, client):
 def test_add_like_already_exists(mock_add_like, client):
     mock_add_like.return_value = False
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.post(
         '/likes',
@@ -53,7 +55,8 @@ def test_add_like_already_exists(mock_add_like, client):
 def test_get_like_count(mock_get_like_count, client):
     mock_get_like_count.return_value = 10
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.get(
         '/likes/count',

@@ -1,9 +1,9 @@
 # test/integracion/test_notification_routes.py
 
+from unittest.mock import patch
 import pytest
 from flask_jwt_extended import create_access_token
 from app import app
-from unittest.mock import patch
 
 @pytest.fixture
 def client():
@@ -12,7 +12,6 @@ def client():
     with app.test_client() as client:
         with app.app_context():
             yield client
-
 
 @patch('controllers.notification_controller.get_user_notifications')
 def test_get_notifications(mock_get_user_notifications, client):
@@ -35,7 +34,8 @@ def test_get_notifications(mock_get_user_notifications, client):
         }
     ]
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.get(
         '/notifications',
@@ -50,7 +50,8 @@ def test_get_notifications(mock_get_user_notifications, client):
 def test_mark_notification_read_success(mock_mark_notification_as_read, client):
     mock_mark_notification_as_read.return_value = True
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.post(
         '/notifications/1/read',
@@ -64,7 +65,8 @@ def test_mark_notification_read_success(mock_mark_notification_as_read, client):
 def test_mark_notification_read_failure(mock_mark_notification_as_read, client):
     mock_mark_notification_as_read.return_value = False
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.post(
         '/notifications/1/read',

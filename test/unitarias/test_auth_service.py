@@ -8,7 +8,7 @@ from app import app
 
 def test_authenticate_user_success(mocker):
     mock_user = mocker.Mock()
-    mock_user.id = 1
+    mock_user.id = "1"  # Changed to string
     mock_user.password = generate_password_hash("correct_password")
     mock_get_user = mocker.patch('controllers.user_controller.get_user_by_username', return_value=mock_user)
     
@@ -16,7 +16,7 @@ def test_authenticate_user_success(mocker):
     access_token = authenticate_user("username", "correct_password")
     
     mock_get_user.assert_called_once_with("username")
-    mock_create_access_token.assert_called_once_with(identity=1)
+    mock_create_access_token.assert_called_once_with(identity="1")  # Changed to string
     assert access_token == "test_token"
 
 def test_authenticate_user_invalid_password(mocker):
@@ -42,7 +42,7 @@ def test_authenticate_user_user_not_found(mocker):
 
 def test_authenticate_user_success_token_verification(mocker):
     mock_user = mocker.Mock()
-    mock_user.id = 1
+    mock_user.id = "1"  # Changed to string
     mock_user.password = generate_password_hash("correct_password")
     mock_get_user = mocker.patch('controllers.user_controller.get_user_by_username', return_value=mock_user)
     
@@ -56,6 +56,6 @@ def test_authenticate_user_success_token_verification(mocker):
         
         decoded_token = decode_token(access_token)
         
-        assert decoded_token['sub'] == 1  
+        assert decoded_token['sub'] == "1"  # Changed to string
         assert 'exp' in decoded_token      
         assert 'iat' in decoded_token      

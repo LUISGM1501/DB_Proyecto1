@@ -592,3 +592,6 @@ conda install -c conda-forge pytest pytest-cov pytz -y
 # Solo las que no estén en conda, instalar con pip
 pip install flask-jwt-extended mongomock fakeredis pytest-mock
 
+# Instalar pytest-benchmark
+conda install -c conda-forge pytest-benchmark -y
+

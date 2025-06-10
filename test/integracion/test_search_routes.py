@@ -1,6 +1,6 @@
-from flask_jwt_extended import create_access_token
 from unittest.mock import patch
 import pytest
+from flask_jwt_extended import create_access_token
 from app import app
 
 @pytest.fixture
@@ -30,7 +30,8 @@ def test_search(mock_search_content, client):
         }
     ]
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Corrected to string
 
     response = client.get(
         '/search',

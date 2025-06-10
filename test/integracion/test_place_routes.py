@@ -1,7 +1,7 @@
+from unittest.mock import patch
 import pytest
 from flask_jwt_extended import create_access_token
 from app import app
-from unittest.mock import patch
 
 @pytest.fixture
 def client():
@@ -14,7 +14,8 @@ def client():
 @patch('controllers.place_controller.create_place')
 def test_create_place(mock_create_place, client):
     mock_create_place.return_value = 1
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")
     response = client.post(
         '/places',
         headers={'Authorization': f'Bearer {access_token}'},
@@ -38,7 +39,8 @@ def test_get_place(mock_get_place, client):
         'city': 'Test City',
         'country': 'Test Country'
     }
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")
     response = client.get(
         '/places/1',
         headers={'Authorization': f'Bearer {access_token}'}
@@ -50,7 +52,8 @@ def test_get_place(mock_get_place, client):
 @patch('controllers.place_controller.update_place')
 def test_update_place(mock_update_place, client):
     mock_update_place.return_value = 1
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")
     response = client.put(
         '/places/1',
         headers={'Authorization': f'Bearer {access_token}'},
@@ -68,7 +71,8 @@ def test_update_place(mock_update_place, client):
 @patch('controllers.place_controller.delete_place')
 def test_delete_place(mock_delete_place, client):
     mock_delete_place.return_value = 1
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")
     response = client.delete(
         '/places/1',
         headers={'Authorization': f'Bearer {access_token}'}

@@ -1,6 +1,6 @@
-from flask_jwt_extended import create_access_token
 from unittest.mock import patch
 import pytest
+from flask_jwt_extended import create_access_token
 from app import app
 
 
@@ -16,7 +16,8 @@ def client():
 def test_add_or_update_reaction(mock_add_or_update_reaction, client):
     mock_add_or_update_reaction.return_value = True
 
-    access_token = create_access_token(identity=1)
+    with app.app_context():
+        access_token = create_access_token(identity="1")  # Cambiado a string
 
     response = client.post(
         '/reactions',
