@@ -90,7 +90,7 @@ DB_HOST_POSTGRES=postgres
 DB_PORT_POSTGRES=5432
 DB_USER=myuser
 DB_PASSWORD=mypassword
-JWT_SECRET=supersecretkey
+JWT_SECRET_KEY=supersecretkey
 REDIS_HOST=redis
 REDIS_PORT=6379
 ```
@@ -575,3 +575,20 @@ Se recomienda implementar monitoreo usando herramientas como:
    - Validación de entrada
    - Sanitización de datos
    - CORS configurado apropiadamente
+
+
+# Crear un ambiente conda nuevo
+conda create -n db_proyecto1 python=3.9 -y
+
+# Activar el ambiente conda
+conda activate db_proyecto1
+
+# Instalar las dependencias usando conda
+conda install -c conda-forge flask werkzeug psycopg2 pymongo redis-py python-dotenv -y
+
+# Instalar las dependencias de testing con conda
+conda install -c conda-forge pytest pytest-cov pytz -y
+
+# Solo las que no estén en conda, instalar con pip
+pip install flask-jwt-extended mongomock fakeredis pytest-mock
+

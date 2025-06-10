@@ -10,7 +10,7 @@ trip_routes = Blueprint('trip_routes', __name__)
 @trip_routes.route('/trips', methods=['POST'])
 @jwt_required()
 def create_trip():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     data = request.json
     
     # Validaciones básicas
@@ -41,7 +41,7 @@ def get_trip(trip_id):
         trip = trip_controller.get_trip(trip_id)
         if trip:
             # Verificar que el usuario actual puede ver este viaje
-            current_user_id = get_jwt_identity()
+            current_user_id = int(get_jwt_identity())  # Convertir a int
             if trip.user_id != current_user_id:
                 return jsonify({"error": "Unauthorized to view this trip"}), 403
             
@@ -55,7 +55,7 @@ def get_trip(trip_id):
 @trip_routes.route('/trips', methods=['GET'])
 @jwt_required()
 def get_user_trips():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     # Parámetros de consulta opcionales
     status = request.args.get('status')
@@ -79,7 +79,7 @@ def get_user_trips():
 @trip_routes.route('/trips/<int:trip_id>', methods=['PUT'])
 @jwt_required()
 def update_trip(trip_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     data = request.json
     
     try:
@@ -109,7 +109,7 @@ def update_trip(trip_id):
 @trip_routes.route('/trips/<int:trip_id>', methods=['DELETE'])
 @jwt_required()
 def delete_trip(trip_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     try:
         # Verificar que el viaje pertenece al usuario actual
@@ -129,7 +129,7 @@ def delete_trip(trip_id):
 @trip_routes.route('/trips/<int:trip_id>/places', methods=['POST'])
 @jwt_required()
 def add_place_to_trip(trip_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     data = request.json
     
     if 'place_id' not in data:
@@ -161,7 +161,7 @@ def add_place_to_trip(trip_id):
 @trip_routes.route('/trips/<int:trip_id>/places/<int:place_id>', methods=['DELETE'])
 @jwt_required()
 def remove_place_from_trip(trip_id, place_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     try:
         # Verificar que el viaje pertenece al usuario actual
@@ -181,7 +181,7 @@ def remove_place_from_trip(trip_id, place_id):
 @trip_routes.route('/trips/<int:trip_id>/places', methods=['GET'])
 @jwt_required()
 def get_trip_places(trip_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     try:
         # Verificar que el viaje pertenece al usuario actual
@@ -198,7 +198,7 @@ def get_trip_places(trip_id):
 @trip_routes.route('/trips/<int:trip_id>/statistics', methods=['GET'])
 @jwt_required()
 def get_trip_statistics(trip_id):
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     try:
         # Verificar que el viaje pertenece al usuario actual
@@ -218,7 +218,7 @@ def get_trip_statistics(trip_id):
 @trip_routes.route('/trips/search', methods=['GET'])
 @jwt_required()
 def search_trips():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # Convertir a int
     
     # Parámetros de búsqueda
     status = request.args.get('status')

@@ -19,7 +19,7 @@ def test_create_trip_success(mock_create_trip, client):
     """Test de creación exitosa de un viaje"""
     mock_create_trip.return_value = 1
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.post(
         '/trips',
@@ -51,7 +51,7 @@ def test_create_trip_minimal_data(mock_create_trip, client):
     """Test de creación de viaje con datos mínimos"""
     mock_create_trip.return_value = 2
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.post(
         '/trips',
@@ -68,7 +68,7 @@ def test_create_trip_minimal_data(mock_create_trip, client):
 
 def test_create_trip_missing_required_fields(client):
     """Test de creación de viaje con campos faltantes"""
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.post(
         '/trips',
@@ -97,7 +97,7 @@ def test_get_trip_success(mock_get_trip, client):
     )
     mock_get_trip.return_value = mock_trip
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/1',
@@ -122,7 +122,7 @@ def test_get_trip_unauthorized(mock_get_trip, client):
     )
     mock_get_trip.return_value = mock_trip
     
-    access_token = create_access_token(identity=1)  # Usuario 1 intenta ver viaje del usuario 2
+    access_token = create_access_token(identity="1")  # Usuario 1 intenta ver viaje del usuario 2
     
     response = client.get(
         '/trips/1',
@@ -137,7 +137,7 @@ def test_get_trip_not_found(mock_get_trip, client):
     """Test de obtención de viaje que no existe"""
     mock_get_trip.return_value = None
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/999',
@@ -155,7 +155,7 @@ def test_get_user_trips_success(mock_get_user_trips, client):
     
     mock_get_user_trips.return_value = ([mock_trip1, mock_trip2], 2)
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips?page=1&page_size=10',
@@ -174,7 +174,7 @@ def test_get_user_trips_with_status_filter(mock_get_user_trips, client):
     mock_trip = Trip(1, 'Viaje Completado', 'Desc', date(2024, 7, 1), date(2024, 7, 15), status='completed', id=1)
     mock_get_user_trips.return_value = ([mock_trip], 1)
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips?status=completed',
@@ -193,7 +193,7 @@ def test_update_trip_success(mock_update_trip, mock_get_trip, client):
     mock_get_trip.return_value = mock_trip
     mock_update_trip.return_value = 1
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.put(
         '/trips/1',
@@ -214,7 +214,7 @@ def test_update_trip_unauthorized(mock_get_trip, client):
     mock_trip = Trip(2, 'Viaje de Otro', 'Desc', date(2024, 7, 1), date(2024, 7, 15), id=1)
     mock_get_trip.return_value = mock_trip
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.put(
         '/trips/1',
@@ -233,7 +233,7 @@ def test_delete_trip_success(mock_delete_trip, mock_get_trip, client):
     mock_get_trip.return_value = mock_trip
     mock_delete_trip.return_value = 1
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.delete(
         '/trips/1',
@@ -251,7 +251,7 @@ def test_add_place_to_trip_success(mock_add_place, mock_get_trip, client):
     mock_get_trip.return_value = mock_trip
     mock_add_place.return_value = 1
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.post(
         '/trips/1/places',
@@ -270,7 +270,7 @@ def test_add_place_to_trip_success(mock_add_place, mock_get_trip, client):
 
 def test_add_place_to_trip_missing_place_id(client):
     """Test de agregar lugar sin place_id"""
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.post(
         '/trips/1/places',
@@ -289,7 +289,7 @@ def test_remove_place_from_trip_success(mock_remove_place, mock_get_trip, client
     mock_get_trip.return_value = mock_trip
     mock_remove_place.return_value = 1
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.delete(
         '/trips/1/places/5',
@@ -307,7 +307,7 @@ def test_remove_place_from_trip_not_found(mock_remove_place, mock_get_trip, clie
     mock_get_trip.return_value = mock_trip
     mock_remove_place.return_value = None
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.delete(
         '/trips/1/places/999',
@@ -350,7 +350,7 @@ def test_get_trip_places_success(mock_get_trip_places, mock_get_trip, client):
     ]
     mock_get_trip_places.return_value = mock_places
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/1/places',
@@ -377,7 +377,7 @@ def test_get_trip_statistics_success(mock_get_statistics, mock_get_trip, client)
     }
     mock_get_statistics.return_value = mock_statistics
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/1/statistics',
@@ -396,7 +396,7 @@ def test_search_trips_success(mock_search_trips, client):
     mock_trip = Trip(1, 'Viaje Europa', 'Desc', date(2024, 7, 1), date(2024, 7, 15), status='completed', id=1)
     mock_search_trips.return_value = ([mock_trip], 1)
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/search?status=completed&title=Europa&page=1&page_size=5',
@@ -415,7 +415,7 @@ def test_search_trips_no_results(mock_search_trips, client):
     """Test de búsqueda sin resultados"""
     mock_search_trips.return_value = ([], 0)
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/search?title=NoExiste',
@@ -435,7 +435,7 @@ def test_unauthorized_request(client):
 
 def test_create_trip_with_exception(client):
     """Test de manejo de excepción en creación de viaje"""
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     with patch('controllers.trip_controller.create_trip', side_effect=Exception('Database error')):
         response = client.post(
@@ -459,7 +459,7 @@ def test_update_trip_failed(mock_update_trip, mock_get_trip, client):
     mock_get_trip.return_value = mock_trip
     mock_update_trip.return_value = None
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.put(
         '/trips/1',
@@ -478,7 +478,7 @@ def test_get_trip_statistics_failed(mock_get_statistics, mock_get_trip, client):
     mock_get_trip.return_value = mock_trip
     mock_get_statistics.return_value = None
     
-    access_token = create_access_token(identity=1)
+    access_token = create_access_token(identity="1")
     
     response = client.get(
         '/trips/1/statistics',
