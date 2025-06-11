@@ -41,7 +41,7 @@ class TestAPIUsabilityAndClarity:
         Prueba de usabilidad: Claridad y consistencia de respuestas de API
         Verifica que las respuestas sean claras y consistentes
         """
-        print("\n📋 INICIANDO PRUEBA DE USABILIDAD: Claridad de respuestas API")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Claridad de respuestas API")
         
         with patch('controllers.trip_controller.create_trip') as mock_create, \
              patch('controllers.trip_controller.get_trip') as mock_get:
@@ -62,7 +62,7 @@ class TestAPIUsabilityAndClarity:
             assert response.json['message'] == 'Trip created successfully'
             assert isinstance(response.json['trip_id'], int)
             
-            print("✅ Respuesta de creación clara y útil")
+            print("Respuesta de creación clara y útil")
             
             # Test 2: Consulta de viaje - información completa
             mock_trip = Trip(
@@ -92,14 +92,14 @@ class TestAPIUsabilityAndClarity:
             assert trip_data['start_date'] == '2024-07-01'
             assert trip_data['end_date'] == '2024-07-15'
             
-            print("✅ Información completa y bien estructurada")
+            print("Información completa y bien estructurada")
 
     def test_error_messages_user_friendly(self, client, auth_headers):
         """
         Prueba de usabilidad: Mensajes de error amigables
         Verifica que los errores sean comprensibles para el usuario
         """
-        print("\n❌ INICIANDO PRUEBA DE USABILIDAD: Mensajes de error amigables")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Mensajes de error amigables")
         
         # Test 1: Campos requeridos faltantes
         response = client.post('/trips', headers=auth_headers, json={
@@ -111,7 +111,7 @@ class TestAPIUsabilityAndClarity:
         assert 'error' in response.json
         error_msg = response.json['error']
         assert 'Missing required field' in error_msg
-        print("✅ Error de campos faltantes claro")
+        print("Error de campos faltantes claro")
         
         # Test 2: Recurso no encontrado
         with patch('controllers.trip_controller.get_trip', return_value=None):
@@ -119,7 +119,7 @@ class TestAPIUsabilityAndClarity:
             
             assert response.status_code == 404
             assert response.json['error'] == 'Trip not found'
-            print("✅ Error de recurso no encontrado claro")
+            print("Error de recurso no encontrado claro")
         
         # Test 3: Acceso no autorizado
         with patch('controllers.trip_controller.get_trip') as mock_get:
@@ -131,14 +131,14 @@ class TestAPIUsabilityAndClarity:
             
             assert response.status_code == 403
             assert 'Unauthorized' in response.json['error']
-            print("✅ Error de autorización claro")
+            print("Error de autorización claro")
 
     def test_api_intuitiveness_and_predictability(self, client, auth_headers):
         """
         Prueba de usabilidad: Intuitividad y predictibilidad de la API
         Verifica que los endpoints se comporten de manera intuitiva
         """
-        print("\n🧠 INICIANDO PRUEBA DE USABILIDAD: Intuitividad de API")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Intuitividad de API")
         
         with patch('controllers.trip_controller.get_user_trips') as mock_get_trips, \
              patch('controllers.trip_controller.search_trips') as mock_search:
@@ -166,7 +166,7 @@ class TestAPIUsabilityAndClarity:
             assert data['page'] == 1
             assert data['page_size'] == 5
             
-            print("✅ Paginación intuitiva y completa")
+            print("Paginación intuitiva y completa")
             
             # Test 2: Búsqueda con criterios múltiples
             search_results = [
@@ -190,14 +190,14 @@ class TestAPIUsabilityAndClarity:
             assert criteria['status'] == 'completed'
             assert criteria['title'] == 'Europa'
             
-            print("✅ Búsqueda intuitiva con criterios claros")
+            print("Búsqueda intuitiva con criterios claros")
 
     def test_data_format_consistency(self, client, auth_headers):
         """
         Prueba de usabilidad: Consistencia en formatos de datos
         Verifica que los datos se presenten de manera consistente
         """
-        print("\n📊 INICIANDO PRUEBA DE USABILIDAD: Consistencia de formatos")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Consistencia de formatos")
         
         with patch('controllers.trip_controller.get_trip') as mock_get, \
              patch('controllers.trip_controller.get_trip_statistics') as mock_stats, \
@@ -242,7 +242,7 @@ class TestAPIUsabilityAndClarity:
             # Verificar formato de fechas ISO
             assert trip_data['start_date'] == '2024-08-15'
             assert trip_data['end_date'] == '2024-08-25'
-            print("✅ Fechas en formato ISO consistente")
+            print("Fechas en formato ISO consistente")
             
             # Test 2: Números decimales con precisión apropiada
             response = client.get('/trips/1/statistics', headers=auth_headers)
@@ -252,7 +252,7 @@ class TestAPIUsabilityAndClarity:
             assert isinstance(stats_data['total_expenses'], (int, float))
             assert isinstance(stats_data['avg_place_rating'], (int, float))
             assert isinstance(stats_data['total_places'], int)
-            print("✅ Formatos numéricos consistentes")
+            print("Formatos numéricos consistentes")
             
             # Test 3: Estructura consistente en listas
             response = client.get('/trips/1/places', headers=auth_headers)
@@ -267,20 +267,20 @@ class TestAPIUsabilityAndClarity:
                 assert 'name' in place
                 assert 'visit_date' in place
             
-            print("✅ Estructura de listas consistente")
+            print("Estructura de listas consistente")
 
     def test_api_discoverability_and_help(self, client, auth_headers):
         """
         Prueba de usabilidad: Descubribilidad y ayuda de la API
         Verifica que la API sea autodescriptiva
         """
-        print("\n🔍 INICIANDO PRUEBA DE USABILIDAD: Descubribilidad de API")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Descubribilidad de API")
         
         # Test 1: Endpoint raíz informativo
         response = client.get('/')
         assert response.status_code == 200
         assert 'Red Social de Viajes' in response.get_data(as_text=True)
-        print("✅ Endpoint raíz informativo")
+        print("Endpoint raíz informativo")
         
         # Test 2: Respuestas con enlaces o contexto útil
         with patch('controllers.trip_controller.get_user_trips') as mock_get_trips:
@@ -301,14 +301,14 @@ class TestAPIUsabilityAndClarity:
             total_pages = (data['total_count'] + data['page_size'] - 1) // data['page_size']
             assert data['page'] <= total_pages or data['total_count'] == 0
             
-            print("✅ Metadatos útiles para navegación")
+            print("Metadatos útiles para navegación")
 
     def test_user_workflow_efficiency(self, client, auth_headers):
         """
         Prueba de usabilidad: Eficiencia de flujos de trabajo
         Verifica que las tareas comunes sean eficientes
         """
-        print("\n⚡ INICIANDO PRUEBA DE USABILIDAD: Eficiencia de flujos")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Eficiencia de flujos")
         
         with patch('controllers.trip_controller.create_trip') as mock_create, \
              patch('controllers.trip_controller.get_trip') as mock_get, \
@@ -340,14 +340,14 @@ class TestAPIUsabilityAndClarity:
             response = client.post(f'/trips/{trip_id}/places', headers=auth_headers, json=place_data)
             assert response.status_code == 201
             
-            print("✅ Flujo de trabajo eficiente verificado")
+            print("Flujo de trabajo eficiente verificado")
 
     def test_feedback_quality_and_responsiveness(self, client, auth_headers):
         """
         Prueba de usabilidad: Calidad de retroalimentación
         Verifica que el sistema proporcione feedback útil
         """
-        print("\n💬 INICIANDO PRUEBA DE USABILIDAD: Calidad de feedback")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Calidad de feedback")
         
         with patch('controllers.trip_controller.create_trip') as mock_create, \
              patch('controllers.trip_controller.update_trip') as mock_update, \
@@ -365,7 +365,7 @@ class TestAPIUsabilityAndClarity:
             assert response.status_code == 201
             assert 'successfully' in response.json['message'].lower()
             assert 'trip_id' in response.json
-            print("✅ Feedback positivo claro y útil")
+            print("Feedback positivo claro y útil")
             
             # Test 2: Feedback de actualización informativo
             mock_trip = Trip(1, 'Test Trip', 'Desc', date(2024, 7, 1), date(2024, 7, 15), id=1)  # INTEGER
@@ -378,10 +378,10 @@ class TestAPIUsabilityAndClarity:
             
             assert response.status_code == 200
             assert 'updated successfully' in response.json['message'].lower()
-            print("✅ Feedback de actualización informativo")
+            print("Feedback de actualización informativo")
             
             # Feedback de calidad verificado
-            print("✅ Sistema proporciona feedback claro y consistente")
+            print("Sistema proporciona feedback claro y consistente")
 
 
 class TestUserExperienceOptimization:
@@ -394,7 +394,7 @@ class TestUserExperienceOptimization:
         Prueba de usabilidad: Divulgación progresiva de información
         Verifica que la información se presente gradualmente
         """
-        print("\n📈 INICIANDO PRUEBA DE USABILIDAD: Divulgación progresiva")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Divulgación progresiva")
         
         with patch('controllers.trip_controller.get_user_trips') as mock_list, \
              patch('controllers.trip_controller.get_trip') as mock_detail:
@@ -417,7 +417,7 @@ class TestUserExperienceOptimization:
                 assert 'start_date' in trip
                 assert 'end_date' in trip
             
-            print("✅ Lista con información esencial")
+            print("Lista con información esencial")
             
             # Nivel 2: Detalles completos cuando se solicitan
             detailed_trip = Trip(
@@ -434,14 +434,14 @@ class TestUserExperienceOptimization:
             assert 'status' in detail_data
             assert 'budget' in detail_data
             
-            print("✅ Detalles completos cuando se solicitan")
+            print("Detalles completos cuando se solicitan")
 
     def test_contextual_actions(self, client, auth_headers):
         """
         Prueba de usabilidad: Acciones contextuales
         Verifica que las acciones disponibles sean apropiadas al contexto
         """
-        print("\n🎯 INICIANDO PRUEBA DE USABILIDAD: Acciones contextuales")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Acciones contextuales")
         
         with patch('controllers.trip_controller.get_trip') as mock_get, \
              patch('controllers.trip_controller.get_trip_places') as mock_places:
@@ -462,14 +462,14 @@ class TestUserExperienceOptimization:
             response = client.get('/trips/1/places', headers=auth_headers)
             assert response.status_code == 200
             
-            print("✅ Acciones apropiadas para viaje planeado")
+            print("Acciones apropiadas para viaje planeado")
 
     def test_error_recovery_guidance(self, client, auth_headers):
         """
         Prueba de usabilidad: Guía para recuperación de errores
         Verifica que los errores incluyan guía para resolverlos
         """
-        print("\n🔧 INICIANDO PRUEBA DE USABILIDAD: Recuperación de errores")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Recuperación de errores")
         
         # Test 1: Error con guía implícita
         response = client.post('/trips', headers=auth_headers, json={
@@ -482,7 +482,7 @@ class TestUserExperienceOptimization:
         
         # El mensaje debería indicar qué falta
         assert 'required field' in error_msg.lower()
-        print("✅ Error indica qué se necesita corregir")
+        print("Error indica qué se necesita corregir")
         
         # Test 2: Error de recurso no encontrado
         with patch('controllers.trip_controller.get_trip', return_value=None):
@@ -490,14 +490,14 @@ class TestUserExperienceOptimization:
             
             assert response.status_code == 404
             assert 'not found' in response.json['error'].lower()
-            print("✅ Error claro para recurso inexistente")
+            print("Error claro para recurso inexistente")
 
     def test_api_consistency_patterns(self, client, auth_headers):
         """
         Prueba de usabilidad: Patrones consistentes en la API
         Verifica que los patrones de uso sean consistentes
         """
-        print("\n🔄 INICIANDO PRUEBA DE USABILIDAD: Patrones consistentes")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Patrones consistentes")
         
         with patch('controllers.trip_controller.create_trip') as mock_create, \
              patch('controllers.trip_controller.get_trip') as mock_get, \
@@ -515,7 +515,7 @@ class TestUserExperienceOptimization:
             assert response.status_code == 201
             assert 'trip_id' in response.json
             assert 'message' in response.json
-            print("✅ Patrón de creación consistente")
+            print("Patrón de creación consistente")
             
             # Patrón: Todas las consultas exitosas devuelven 200 con datos
             mock_trip = Trip(1, 'Test', 'Desc', date(2024, 7, 1), date(2024, 7, 15), id=1)  # INTEGER
@@ -525,7 +525,7 @@ class TestUserExperienceOptimization:
             
             assert response.status_code == 200
             assert 'id' in response.json
-            print("✅ Patrón de consulta consistente")
+            print("Patrón de consulta consistente")
             
             # Patrón: Todas las adiciones devuelven 201 con ID de entrada
             mock_add.return_value = 1
@@ -537,7 +537,7 @@ class TestUserExperienceOptimization:
             assert response.status_code == 201
             assert 'entry_id' in response.json
             assert 'message' in response.json
-            print("✅ Patrón de adición consistente")
+            print("Patrón de adición consistente")
 
 
 class TestAccessibilityAndInclusion:
@@ -550,7 +550,7 @@ class TestAccessibilityAndInclusion:
         Prueba de usabilidad: Soporte para múltiples formatos
         Verifica flexibilidad en formatos de entrada
         """
-        print("\n🌐 INICIANDO PRUEBA DE USABILIDAD: Flexibilidad de formatos")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Flexibilidad de formatos")
         
         with patch('controllers.trip_controller.create_trip') as mock_create:
             mock_create.return_value = 1
@@ -564,7 +564,7 @@ class TestAccessibilityAndInclusion:
             
             response = client.post('/trips', headers=auth_headers, json=minimal_data)
             assert response.status_code == 201
-            print("✅ Formato mínimo aceptado")
+            print("Formato mínimo aceptado")
             
             # Formato completo válido
             complete_data = {
@@ -578,14 +578,14 @@ class TestAccessibilityAndInclusion:
             
             response = client.post('/trips', headers=auth_headers, json=complete_data)
             assert response.status_code == 201
-            print("✅ Formato completo aceptado")
+            print("Formato completo aceptado")
 
     def test_internationalization_readiness(self, client, auth_headers):
         """
         Prueba de usabilidad: Preparación para internacionalización
         Verifica que la API maneje diferentes idiomas y formatos
         """
-        print("\n🌍 INICIANDO PRUEBA DE USABILIDAD: Preparación i18n")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Preparación i18n")
         
         with patch('controllers.trip_controller.create_trip') as mock_create:
             mock_create.return_value = 1
@@ -600,14 +600,14 @@ class TestAccessibilityAndInclusion:
             
             response = client.post('/trips', headers=auth_headers, json=international_data)
             assert response.status_code == 201
-            print("✅ Caracteres internacionales manejados")
+            print("Caracteres internacionales manejados")
 
     def test_graceful_degradation(self, client, auth_headers):
         """
         Prueba de usabilidad: Degradación elegante
         Verifica que el sistema funcione con capacidades limitadas
         """
-        print("\n📱 INICIANDO PRUEBA DE USABILIDAD: Degradación elegante")
+        print("\nINICIANDO PRUEBA DE USABILIDAD: Degradación elegante")
         
         with patch('controllers.trip_controller.get_user_trips') as mock_get:
             
@@ -622,16 +622,16 @@ class TestAccessibilityAndInclusion:
             # Debería funcionar incluso con datos mínimos
             assert response.status_code == 200
             assert len(response.json['trips']) == 1
-            print("✅ Funciona con datos mínimos")
+            print("Funciona con datos mínimos")
 
 
 def test_usability_summary():
     """Resumen de todas las pruebas de usabilidad"""
     print("\n" + "="*60)
-    print("🎨 RESUMEN DE PRUEBAS DE USABILIDAD")
+    print("RESUMEN DE PRUEBAS DE USABILIDAD")
     print("="*60)
-    print("✅ Todas las pruebas de usabilidad completadas")
-    print("\n👤 Aspectos de usabilidad evaluados:")
+    print("Todas las pruebas de usabilidad completadas")
+    print("\nAspectos de usabilidad evaluados:")
     print("   • Claridad y consistencia de respuestas")
     print("   • Mensajes de error amigables")
     print("   • Intuitividad y predictibilidad")
@@ -646,14 +646,14 @@ def test_usability_summary():
     print("   • Flexibilidad de formatos")
     print("   • Preparación para i18n")
     print("   • Degradación elegante")
-    print("\n🎯 Criterios de usabilidad verificados:")
+    print("\nCriterios de usabilidad verificados:")
     print("   • API intuitiva y predecible")
     print("   • Errores claros y accionables")
     print("   • Respuestas consistentes y útiles")
     print("   • Flujos de trabajo eficientes")
     print("   • Feedback apropiado y oportuno")
     print("   • Flexibilidad para diferentes casos de uso")
-    print("\n💡 Beneficios de las pruebas de usabilidad:")
+    print("\nBeneficios de las pruebas de usabilidad:")
     print("   • API más fácil de usar y adoptar")
     print("   • Reducción de curva de aprendizaje")
     print("   • Mejor experiencia de desarrollador")
